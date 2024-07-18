@@ -9,6 +9,27 @@ class SupabaseService {
     this.supabase = supabase;
   }
 
+  async select<T>(table: string, select: string) {
+    try {
+      const { data, error } = await this.supabase.from(table).select(select);
+
+      if (error) {
+        this.showToast(
+          "데이터 가져오기 실패",
+          "데이터를 가져오는 중 문제가 발생했습니다.",
+        );
+      } else {
+        return data as T[];
+      }
+    } catch (error) {
+      this.showToast(
+        "데이터 가져오기 실패",
+        "네트워크 에러. 다시 시도해 주세요.",
+      );
+      return [];
+    }
+  }
+
   async upsert<T>(table: string, data: T | T[]) {
     try {
       const { data: upsertedData, error } = await this.supabase
@@ -43,7 +64,7 @@ class SupabaseService {
           "업데이트 중 문제가 발생했습니다. 다시 시도해 주세요.",
         );
       } else {
-        return insertedData as T[];
+        return insertedData;
       }
     } catch (error) {
       this.showToast("업데이트 실패", "네트워크 에러. 다시 시도해 주세요.");

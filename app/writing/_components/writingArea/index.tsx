@@ -1,24 +1,90 @@
 "use client";
 
+import { supabaseService } from "@/app/onboarding/_utils/supabaseService";
+import { Button } from "@/components/ui/button";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AIrecommendTopic from "./AIrecommendTopic";
 import ContentTextArea from "./ContentTextArea";
 import TitleInput from "./TitleInput";
-import { Button } from "@/components/ui/button";
-import { supabaseService } from "@/app/onboarding/_utils/supabaseService";
-import { useRouter } from "next/navigation";
+import { supabase } from "@/app/utils/supabase/client";
 
-const WritingArea = () => {
+interface Props {
+  user: User | null;
+}
+
+const WritingArea = ({ user }: Props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
-    await supabaseService.insert("posts", {
-      title,
-      content,
-    });
-    // router.replace("/dashboard");
+    if (!user) {
+      console.error("User is not logged in");
+      return;
+    }
+
+    if (!title.trim() || !content.trim()) {
+      console.error("Title and content are required");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const insertedPost = await supabaseService.insert("posts", {
+        title,
+        content,
+        user_id: user.id,
+      });
+
+      if (!insertedPost || insertedPost.length === 0) {
+        throw new Error("Failed to insert post");
+      }
+
+      const post = insertedPost[0];
+      console.log(post);
+
+      router.push(`/posts/${post.id}`);
+
+      generateAIReply(post);
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const generateAIReply = async (post: {
+    id: string;
+    title: string;
+    content: string;
+    user_id: string;
+  }) => {
+    try {
+      const { error: functionError } = await supabase.functions.invoke(
+        "process-new-post",
+        {
+          body: JSON.stringify({
+            postId: post.id,
+            title: post.title,
+            content: post.content,
+            userId: post.user_id,
+          }),
+        },
+      );
+
+      if (functionError) {
+        console.error("Failed to generate AI reply:", functionError);
+      } else {
+        console.log("AI reply generated successfully");
+        // Optionally, you can trigger a notification here
+      }
+    } catch (error) {
+      console.error("Error generating AI reply:", error);
+    }
   };
 
   const handleChangeTitle = (value: string) => {
@@ -34,7 +100,9 @@ const WritingArea = () => {
       <TitleInput value={title} onChange={handleChangeTitle} />
       <AIrecommendTopic />
       <ContentTextArea value={content} onChange={handleChangeContent} />
-      <Button onClick={handleSubmit}>발행</Button>
+      <Button onClick={handleSubmit} disabled={isSubmitting}>
+        {isSubmitting ? "처리 중..." : "발행"}
+      </Button>
     </div>
   );
 };
