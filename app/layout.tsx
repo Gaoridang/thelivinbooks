@@ -4,6 +4,7 @@ import "./globals.css";
 import ReactQueryProvider from "./providers/ReactQueryProvider";
 import Header from "./Header";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <ReactQueryProvider>
-      <html lang="en">
-        <body className={inter.className}>
+      <html lang="en" className="h-full">
+        <body className={cn(inter.className, "h-full")}>
           <Header />
           <main>{children}</main>
           <Toaster />

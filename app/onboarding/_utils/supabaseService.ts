@@ -30,6 +30,27 @@ class SupabaseService {
     }
   }
 
+  async insert<T>(table: string, data: T | T[]) {
+    try {
+      const { data: insertedData, error } = await this.supabase
+        .from(table)
+        .insert(data)
+        .select();
+
+      if (error) {
+        this.showToast(
+          "업데이트 실패",
+          "업데이트 중 문제가 발생했습니다. 다시 시도해 주세요.",
+        );
+      } else {
+        return insertedData as T[];
+      }
+    } catch (error) {
+      this.showToast("업데이트 실패", "네트워크 에러. 다시 시도해 주세요.");
+      return [];
+    }
+  }
+
   private showToast(title: string, description: string) {
     toast(title, {
       description,
