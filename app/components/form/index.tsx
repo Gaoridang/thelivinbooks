@@ -1,49 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import { getFeedbackByClaude } from "@/app/actions/getFeedbackByClaude";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 import TextArea from "../textarea";
-import { extractKeywords } from "@/app/actions/extractKeywords";
-
-interface Source {
-  title: string;
-  author: string;
-  year: string;
-  type: string;
-  description: string;
-  link: string;
-}
-
-interface Recommendation {
-  mainTopic: string;
-  keywords: string[];
-  sources: Source[];
-}
 
 const Form = () => {
-  const [recommendations, setRecommendations] = useState<Recommendation>();
+  const [feedback, setFeedback] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      const response = await extractKeywords(formData);
+      setLoading(true);
+      const response = await getFeedbackByClaude(formData);
 
-      setRecommendations(response);
+      setFeedback(response);
       setError("");
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <form action={handleSubmit}>
       <TextArea name="article" />
-      <button type="submit">추천받기</button>
-      {recommendations && (
-        <div>
-          <h2>Recommendations:</h2>
-        </div>
+      <Button disabled={isLoading} type="submit">
+        {isLoading ? "답변 생성 중..." : "추천받기"}
+      </Button>
+      {feedback && (
+        <Card className="mx-auto w-full max-w-2xl">
+          <CardHeader>
+            <CardTitle>피드백</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-4">
+              {feedback.split(/(?<=[.!?])\s+/).map((sentence, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="mr-2 font-bold">•</span>
+                  <p>{sentence}</p>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       )}
       {error && <p>{error}</p>}
     </form>

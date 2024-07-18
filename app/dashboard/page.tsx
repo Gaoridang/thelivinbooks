@@ -1,13 +1,13 @@
-import React from "react";
-import Form from "../components/form";
+import Actions from "./_components/actions";
+import Metrics from "./_components/metrics";
+import MostRecentWriting from "./_components/mostRecentWriting";
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
   return (
     <div className="mx-auto max-w-3xl p-8">
-      <h1>In-k-spire</h1>
-      <p>나의 첫 글을 쓰고</p>
-      <p>다음 글감을 추천 받으세요.</p>
-      <Form />
+      <Actions />
+      <Metrics />
+      <MostRecentWriting />
     </div>
   );
 };

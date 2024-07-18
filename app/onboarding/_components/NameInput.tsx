@@ -1,18 +1,39 @@
-import { useOnboarding } from "@/app/providers/onboardingContext";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { OnboardingComponentProps } from "../_types";
+import { supabaseService } from "../_utils/supabaseService";
 
-const NameInput = () => {
-  const { onboarding, updateOnboarding } = useOnboarding();
+const NameInput = ({ user, onComplete }: OnboardingComponentProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ name: string }>({
+    defaultValues: { name: "" },
+  });
+
+  const onSubmit = async (data: { name: string }) => {
+    await supabaseService.upsert("profiles", {
+      id: user?.id!,
+      name: data.name,
+    });
+    onComplete();
+  };
 
   return (
     <div>
       <h2>환영합니다!</h2>
       <p>당신만을 위한 글쓰기 여정을 시작해보세요.</p>
-      <Input
-        placeholder="이름을 입력해주세요."
-        onChange={(e) => updateOnboarding("name", e.target.value)}
-        value={onboarding.name}
-      />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          {...register("name", { required: "이름을 입력하세요." })}
+          placeholder="이름을 입력해주세요."
+          autoComplete="off"
+        />
+        {errors.name && <p>{errors.name.message}</p>}
+        <Button type="submit">다음</Button>
+      </form>
     </div>
   );
 };

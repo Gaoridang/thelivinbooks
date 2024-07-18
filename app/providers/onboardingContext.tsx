@@ -5,12 +5,13 @@ import { createContext, PropsWithChildren, useContext, useState } from "react";
 interface Onboarding {
   name: string;
   experience: string;
+  interests: string[];
   feedback_style: string;
 }
 
 interface OnboardingContextType {
   onboarding: Onboarding;
-  updateOnboarding: (field: keyof Onboarding, value: string) => void;
+  updateOnboarding: (field: keyof Onboarding, value: string | string[]) => void;
 }
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(
@@ -30,9 +31,13 @@ export const OnboardingProvider = ({ children }: PropsWithChildren) => {
     name: "",
     experience: "",
     feedback_style: "",
+    interests: [],
   });
 
-  const updateOnboarding = (field: keyof Onboarding, value: string) => {
+  const updateOnboarding = (
+    field: keyof Onboarding,
+    value: string | string[],
+  ) => {
     setOnboarding((prev) => ({ ...prev, [field]: value }));
   };
 
