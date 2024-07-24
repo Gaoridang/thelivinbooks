@@ -18,7 +18,11 @@ const NameInput = ({ user, onComplete }: OnboardingComponentProps) => {
       id: user?.id!,
       name: data.name,
     });
-    onComplete();
+    await supabaseService.upsert("onboarding_progress", {
+      user_id: user?.id!,
+      profile_completed: true,
+    });
+    onComplete && onComplete();
   };
 
   return (

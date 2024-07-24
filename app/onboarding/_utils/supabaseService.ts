@@ -30,6 +30,30 @@ class SupabaseService {
     }
   }
 
+  // what is the type data: {name: "Australia"}?
+
+  async update<T>(table: string, data: Partial<T>, where: Partial<T>) {
+    try {
+      const { data: updatedData, error } = await this.supabase
+        .from(table)
+        .update(data)
+        .match(where)
+        .select();
+
+      if (error) {
+        this.showToast(
+          "업데이트 실패",
+          "업데이트 중 문제가 발생했습니다. 다시 시도해 주세요.",
+        );
+      } else {
+        return updatedData as T[];
+      }
+    } catch (error) {
+      this.showToast("업데이트 실패", "네트워크 에러. 다시 시도해 주세요.");
+      return [];
+    }
+  }
+
   async upsert<T>(table: string, data: T | T[]) {
     try {
       const { data: upsertedData, error } = await this.supabase

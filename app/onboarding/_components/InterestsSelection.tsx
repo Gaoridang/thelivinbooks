@@ -13,7 +13,11 @@ const InterestSchema = z.object({
   }),
 });
 
-const InterestsSelection = ({ user, onComplete }: OnboardingComponentProps) => {
+interface Props extends OnboardingComponentProps {
+  interests: { id: string; name: string }[];
+}
+
+const InterestsSelection = ({ user, onComplete, interests }: Props) => {
   const form = useForm<z.infer<typeof InterestSchema>>({
     resolver: zodResolver(InterestSchema),
     defaultValues: {
@@ -23,12 +27,16 @@ const InterestsSelection = ({ user, onComplete }: OnboardingComponentProps) => {
 
   const onSubmit = async (data: z.infer<typeof InterestSchema>) => {
     const interests = data.interests.map((interest) => ({
-      profile_id: user?.id,
-      interest_name: interest,
+      user_id: user?.id,
+      interest_id: interest,
     }));
 
     await supabaseService.upsert("profile_interests", interests);
-    onComplete();
+    await supabaseService.upsert("onboarding_progress", {
+      user_id: user?.id!,
+      interests_completed: true,
+    });
+    onComplete && onComplete();
   };
 
   return (
@@ -39,27 +47,27 @@ const InterestsSelection = ({ user, onComplete }: OnboardingComponentProps) => {
           name="interests"
           render={({ field }) => (
             <FormItem className="flex flex-wrap gap-2 space-y-0">
-              {interestCategories.map((category) => (
-                <FormControl key={category.id}>
+              {interests.map((interest) => (
+                <FormControl key={interest.id}>
                   <Button
                     type="button"
                     variant={
-                      field.value.includes(category.id) ? "default" : "ghost"
+                      field.value.includes(interest.id) ? "default" : "ghost"
                     }
                     className={`flex items-center gap-2 rounded-full border px-3 py-2 ${
-                      field.value.includes(category.id)
+                      field.value.includes(interest.id)
                         ? "bg-primary text-primary-foreground"
                         : ""
                     }`}
                     onClick={() => {
-                      const updatedValue = field.value.includes(category.id)
-                        ? field.value.filter((id) => id !== category.id)
-                        : [...field.value, category.id];
+                      const updatedValue = field.value.includes(interest.id)
+                        ? field.value.filter((id) => id !== interest.id)
+                        : [...field.value, interest.id];
                       field.onChange(updatedValue);
                     }}
                   >
-                    <span className="text-lg">{category.icon}</span>
-                    <span>{category.name}</span>
+                    {/* <span className="text-lg">{interest.icon}</span> */}
+                    <span>{interest.name}</span>
                   </Button>
                 </FormControl>
               ))}

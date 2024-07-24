@@ -48,8 +48,6 @@ const WritingArea = ({ user }: Props) => {
       console.log(post);
 
       router.push(`/posts/${post.id}`);
-
-      generateAIReply(post);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     } finally {
@@ -57,35 +55,35 @@ const WritingArea = ({ user }: Props) => {
     }
   };
 
-  const generateAIReply = async (post: {
-    id: string;
-    title: string;
-    content: string;
-    user_id: string;
-  }) => {
-    try {
-      const { error: functionError } = await supabase.functions.invoke(
-        "process-new-post",
-        {
-          body: JSON.stringify({
-            postId: post.id,
-            title: post.title,
-            content: post.content,
-            userId: post.user_id,
-          }),
-        },
-      );
+  // const generateAIReply = async (post: {
+  //   id: string;
+  //   title: string;
+  //   content: string;
+  //   user_id: string;
+  // }) => {
+  //   try {
+  //     const { error: functionError } = await supabase.functions.invoke(
+  //       "process-new-post",
+  //       {
+  //         body: JSON.stringify({
+  //           postId: post.id,
+  //           title: post.title,
+  //           content: post.content,
+  //           userId: post.user_id,
+  //         }),
+  //       },
+  //     );
 
-      if (functionError) {
-        console.error("Failed to generate AI reply:", functionError);
-      } else {
-        console.log("AI reply generated successfully");
-        // Optionally, you can trigger a notification here
-      }
-    } catch (error) {
-      console.error("Error generating AI reply:", error);
-    }
-  };
+  //     if (functionError) {
+  //       console.error("Failed to generate AI reply:", functionError);
+  //     } else {
+  //       console.log("AI reply generated successfully");
+  //       // Optionally, you can trigger a notification here
+  //     }
+  //   } catch (error) {
+  //     console.error("Error generating AI reply:", error);
+  //   }
+  // };
 
   const handleChangeTitle = (value: string) => {
     setTitle(value);
@@ -98,7 +96,6 @@ const WritingArea = ({ user }: Props) => {
   return (
     <div className="grid gap-4">
       <TitleInput value={title} onChange={handleChangeTitle} />
-      <AIrecommendTopic />
       <ContentTextArea value={content} onChange={handleChangeContent} />
       <Button onClick={handleSubmit} disabled={isSubmitting}>
         {isSubmitting ? "처리 중..." : "발행"}

@@ -2,6 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import React from "react";
 import StreakCount from "./StreakCount";
 import TotalPosts from "./TotalPosts";
+import LastPostDate from "./LastPostDate";
 
 const Metrics = async () => {
   // 연속 일 수, 총 글 수,
@@ -17,9 +18,10 @@ const Metrics = async () => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-3 gap-4">
       <StreakCount count={data.streak_count} />
       <TotalPosts count={data.total_posts} />
+      <LastPostDate date={data.last_post_date} />
     </div>
   );
 };

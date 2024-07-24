@@ -13,7 +13,34 @@ const OnboardingPage = async () => {
     redirect("login");
   }
 
-  return <Onboarding user={user} />;
+  const { data: progress, error: progressError } = await supabase
+    .from("onboarding_progress")
+    .select("profile_completed, interests_completed, questions_completed")
+    .single();
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("onboarding_completed")
+    .single();
+  const { data: interests, error: interestsError } = await supabase
+    .from("interests")
+    .select("id, name");
+
+  if (
+    progressError ||
+    !progress ||
+    interestsError ||
+    !interests ||
+    profileError ||
+    !profile
+  ) {
+    redirect("error");
+  }
+
+  if (profile.onboarding_completed) {
+    redirect("/dashboard");
+  }
+
+  return <Onboarding user={user} progress={progress} interests={interests} />;
 };
 
 export default OnboardingPage;

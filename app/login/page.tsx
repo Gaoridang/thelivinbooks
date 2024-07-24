@@ -26,7 +26,7 @@ const LoginPage = () => {
         </form>
       </div>
       <div className="hidden items-center justify-center bg-gray-100 md:flex">
-        {/* <LoginRightImage /> */}
+        <LoginRightImage />
         당신의 생각을 살아 숨쉬게.
       </div>
     </div>

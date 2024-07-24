@@ -1,3 +1,6 @@
+// @ts-ignore
+// @ts-nocheck
+
 // supabase/functions/process-new-post/index.ts
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -99,7 +102,7 @@ ${feedbackStyle}
 
 6. Use language that matches your role's style, but avoid excessive questions or explanations.
 
-7. Consider both the title and content in your feedback.
+7. Consider both the title and content in your feedback, but don't include them in your response.
 
 Provide your role-specific feedback in 3-5 sentences maximum:
     `;
@@ -114,7 +117,7 @@ Provide your role-specific feedback in 3-5 sentences maximum:
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
+          model: "gpt-4o-2024-05-13",
           messages: [{ role: "user", content: prompt }],
           max_tokens: 150,
         }),
@@ -130,13 +133,11 @@ Provide your role-specific feedback in 3-5 sentences maximum:
     const aiReply = openAIData.choices[0].message.content;
 
     // AI 답변을 ai_replies 테이블에 저장
-    const { error: insertError } = await supabase
-      .from("ai_replies")
-      .insert({
-        post_id: postId,
-        content: aiReply,
-        feedback_style: feedbackStyle,
-      });
+    const { error: insertError } = await supabase.from("ai_replies").insert({
+      post_id: postId,
+      content: aiReply,
+      feedback_style: feedbackStyle,
+    });
 
     if (insertError) {
       console.error("Error inserting AI reply:", insertError);
