@@ -25,9 +25,9 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
-      <div className="hidden items-center justify-center bg-gray-100 md:flex">
-        <LoginRightImage />
-        당신의 생각을 살아 숨쉬게.
+      <div className="hidden items-center justify-center bg-gray-100 md:flex md:flex-col">
+        <p className="text-3xl font-bold">livinbooks</p>
+        <p>나를 위한 퍼즐을 만들어보세요.</p>
       </div>
     </div>
   );

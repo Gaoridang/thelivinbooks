@@ -10,7 +10,10 @@ interface Props {
 const TitleInput = ({ value, onChange }: Props) => {
   return (
     <div>
-      <Label htmlFor="title" className="text-2xl font-bold">
+      <Label
+        htmlFor="title"
+        className="border-yellow border-l-4 pl-4 font-semibold"
+      >
         제목
       </Label>
       <Input

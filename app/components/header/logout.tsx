@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import React from "react";
-import { supabase } from "../utils/supabase/client";
+import { supabase } from "../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 
 const LogoutButton = () => {

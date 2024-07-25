@@ -10,16 +10,19 @@ interface Props {
 const ContentTextArea = ({ value, onChange }: Props) => {
   return (
     <div>
-      <Label htmlFor="story" className="text-2xl font-bold">
+      <Label
+        htmlFor="story"
+        className="border-yellow border-l-4 pl-4 font-semibold"
+      >
         이야기
       </Label>
       <Textarea
         placeholder="당신의 이야기를 적어주세요."
-        className="h-full resize-none rounded-none border-none pl-0 text-base focus-visible:ring-0"
+        className="resize-none rounded-none border-none pl-0 text-base focus-visible:ring-0"
         name="story"
         id="story"
         maxLength={500}
-        rows={10}
+        rows={8}
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />

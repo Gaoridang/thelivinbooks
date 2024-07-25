@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "../utils/supabase/server";
+import { createClient } from "../../utils/supabase/server";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { feedbackStyles } from "../data/feedback_styles";
+import { feedbackStyles } from "../../data/feedback_styles";
 import FeedbackStyleSelection from "./_components/FeedbackStyleSelection";
 
 const SettingsPage = async () => {
