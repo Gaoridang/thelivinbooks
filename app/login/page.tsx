@@ -2,7 +2,6 @@
 
 import React from "react";
 import { login, signup } from "./actions";
-import LoginRightImage from "@/app/images/login.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

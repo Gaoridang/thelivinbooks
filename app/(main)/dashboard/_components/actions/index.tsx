@@ -1,6 +1,5 @@
 import { createClient } from "@/app/utils/supabase/server";
 import WritingButton from "./WritingButton";
-import Box from "@/app/images/box.svg";
 import { Puzzle } from "lucide-react";
 
 const Actions = async () => {
