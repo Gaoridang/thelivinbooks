@@ -34,7 +34,7 @@ const ExperienceSelection = ({
       id: user?.id!,
       experience: data.experience,
     });
-    onComplete();
+    onComplete && onComplete();
   };
 
   return (
