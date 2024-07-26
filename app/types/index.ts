@@ -5,8 +5,10 @@ export interface Answer {
   question: string;
 }
 
-export interface CategoryAnswers {
-  [category: string]: Answer[];
-}
+export type Category = "과거" | "현재" | "미래";
+
+export type CategoryAnswers = {
+  [key in Category]: Answer[];
+};
 
 export type CategorizedAnswers = CategoryAnswers;
