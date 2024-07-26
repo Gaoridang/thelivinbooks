@@ -36,6 +36,7 @@ const WritingArea = ({ user, questionId }: Props) => {
 
     try {
       const insertedPost = await supabaseService.insert("profile_answers", {
+        title: title,
         answer: content,
         user_id: user.id,
         question_id: questionId,
@@ -47,7 +48,7 @@ const WritingArea = ({ user, questionId }: Props) => {
 
       const post = insertedPost[0];
 
-      // router.push(`/posts/${post.id}`);
+      router.push(`/dashboard`);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     } finally {
