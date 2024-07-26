@@ -19,7 +19,7 @@ const Actions = async () => {
           모였습니다.
         </p>
       </div>
-      <div className="bg-yellow flex items-center justify-between gap-4 rounded-2xl px-6 py-4">
+      <div className="bg-yellow flex flex-col items-center justify-between gap-4 rounded-2xl px-6 py-4 md:flex-row">
         <p>{nextQuestion}</p>
         <WritingButton questionId={nextQuestionId} />
       </div>

@@ -62,6 +62,14 @@
   }
 }
 
+.group:hover li {
+  transform: scale(var(--scale)) translateY(var(--hoverTranslateY)) !important;
+}
+
+.group:hover li > div {
+  transform: scale(var(--inverseScale)) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
