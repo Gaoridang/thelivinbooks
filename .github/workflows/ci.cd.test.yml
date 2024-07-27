@@ -8,6 +8,11 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: production # 또는 사용 중인 환경 이름
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      OPEN_AI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - name: 🛎 Checkout repository
         uses: actions/checkout@v3
@@ -22,6 +27,13 @@ jobs:
 
       - name: 🏗 Build project
         run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: 🧹 Run linter
         run: npm run lint
+
+      - name: 🧪 Run tests
+        run: npm test
