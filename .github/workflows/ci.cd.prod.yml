@@ -10,6 +10,7 @@ jobs:
     if: github.event.pull_request.merged == true
     env:
       ENV_PATH: .env
+      S3_BUCKET_DIR_NAME: your-directory-name # 이 값을 실제 사용하는 디렉토리 이름으로 변경하세요
     environment: production
     runs-on: ubuntu-latest
     steps:
@@ -40,8 +41,9 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
 
       - name: 🚀 Deploy to EC2 with CodeDeploy
-        run: aws deploy create-deployment
-          --application-name codedeploy
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name ${{ env.DEPLOYMENT_GROUP_NAME }}
-          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
+        run: |
+          aws deploy create-deployment \
+            --application-name codedeploy \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ vars.DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
