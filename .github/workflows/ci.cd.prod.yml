@@ -24,6 +24,7 @@ jobs:
           touch ${{ env.ENV_PATH }}
           echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} >> ${{ env.ENV_PATH }}
           echo NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} >> ${{ env.ENV_PATH }}
+          echo OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} >> ${{ env.ENV_PATH }}
 
       - name: 📦 Zip project files
         run: zip -r ./$GITHUB_SHA.zip .
