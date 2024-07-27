@@ -1,0 +1,36 @@
+name: 🧪 Release Branch CI
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: production # 또는 사용 중인 환경 이름
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      OPEN_AI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - name: 🛎 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # 또는 프로젝트에서 사용하는 Node.js 버전
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗 Build project
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: 🧹 Run linter
+        run: npm run lint
