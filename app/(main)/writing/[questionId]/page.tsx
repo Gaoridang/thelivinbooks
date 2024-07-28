@@ -9,10 +9,6 @@ interface Props {
 
 const WritingPage = async ({ params }: Props) => {
   const supabase = createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
 
   const { data: question, error: questionError } = await supabase
     .from("questions")
@@ -27,7 +23,7 @@ const WritingPage = async ({ params }: Props) => {
   return (
     <div className="relative mx-4 mt-8 max-w-2xl md:mx-auto">
       <Question question={question} />
-      <WritingArea user={user} questionId={params.questionId} />
+      <WritingArea fetchedQuestionId={params.questionId} />
     </div>
   );
 };

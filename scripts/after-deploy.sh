@@ -9,7 +9,6 @@ set -e
 # 작업 디렉토리로 이동
 cd /home/ubuntu/api_back
 
-
 # Node.js 버전 확인 (선택사항)
 echo "Node.js version:"
 node -v
