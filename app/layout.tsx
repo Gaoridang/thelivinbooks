@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import ReactQueryProvider from "./providers/ReactQueryProvider";
-import Header from "./Header";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
-import Head from "next/head";
+import ReactQueryProviders from "./providers/ServerQueryClientProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,13 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ReactQueryProvider>
-      <html lang="en" className="h-full">
-        <body className={cn("h-full")}>
+    <html lang="en" className="h-full">
+      <body className={cn("h-full")}>
+        <ReactQueryProviders>
           <main>{children}</main>
-          <Toaster />
-        </body>
-      </html>
-    </ReactQueryProvider>
+        </ReactQueryProviders>
+        <Toaster />
+      </body>
+    </html>
   );
 }
