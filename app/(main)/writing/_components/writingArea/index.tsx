@@ -1,23 +1,23 @@
 "use client";
 
 import { supabaseService } from "@/app/onboarding/_utils/supabaseService";
+import { Category, Question } from "@/app/types";
+import { supabase } from "@/app/utils/supabase/client";
 import { Button } from "@/components/ui/button";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import ContentTextArea from "./ContentTextArea";
 import TitleInput from "./TitleInput";
-import { supabase } from "@/app/utils/supabase/client";
-import { Category, Question } from "@/app/types";
 
 interface Props {
   fetchedQuestionId?: string;
+  category?: Category;
 }
 
-const WritingArea = ({ fetchedQuestionId }: Props) => {
+const WritingArea = ({ fetchedQuestionId, category }: Props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -45,7 +45,7 @@ const WritingArea = ({ fetchedQuestionId }: Props) => {
           "questions",
           {
             content: title,
-            category: searchParams.get("category") as Category,
+            category,
           },
         );
 
