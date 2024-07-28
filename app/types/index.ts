@@ -12,3 +12,9 @@ export type CategoryAnswers = {
 };
 
 export type CategorizedAnswers = CategoryAnswers;
+
+export type Question = {
+  id: string;
+  content: string;
+  category: Category;
+};

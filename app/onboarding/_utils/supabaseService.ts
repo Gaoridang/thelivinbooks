@@ -75,7 +75,7 @@ class SupabaseService {
     }
   }
 
-  async insert<T>(table: string, data: T | T[]) {
+  async insert<T>(table: string, data: T | T[]): Promise<T[]> {
     try {
       const { data: insertedData, error } = await this.supabase
         .from(table)
@@ -94,6 +94,8 @@ class SupabaseService {
       this.showToast("업데이트 실패", "네트워크 에러. 다시 시도해 주세요.");
       return [];
     }
+
+    return [];
   }
 
   private showToast(title: string, description: string) {

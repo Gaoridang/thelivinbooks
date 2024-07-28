@@ -1,4 +1,4 @@
-import { CategorizedAnswers } from "@/app/types";
+import { CategorizedAnswers } from "@/app/(main)/dashboard/_components/answers/Answers";
 import { createClient } from "@/app/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
@@ -10,11 +10,15 @@ export async function GET() {
     error: PostgrestError | null;
   };
 
-  if (!data || error) {
+  if (error) {
     return NextResponse.json(
       { message: "답변을 찾을 수 없습니다." },
       { status: 404 },
     );
+  }
+
+  if (!data) {
+    return NextResponse.json({ data: [] }, { status: 200 });
   }
 
   return NextResponse.json({ data }, { status: 200 });

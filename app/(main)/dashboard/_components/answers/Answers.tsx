@@ -20,7 +20,7 @@ type Answer = {
 };
 
 type Category = "과거" | "현재" | "미래";
-type CategorizedAnswers = {
+export type CategorizedAnswers = {
   [key in Category]: Answer[];
 };
 
@@ -56,9 +56,9 @@ const AnswerItems = ({ expandedCategory }: Props) => {
   const expandedData = data?.[expandedCategory as Category];
 
   return (
-    <div className={cn("relative grid grid-cols-3 gap-4")}>
+    <div className="relative">
       <motion.ul
-        className="absolute left-0 top-full mt-4 grid gap-4"
+        className="absolute left-0 top-full mt-4 grid w-full gap-4"
         variants={ListVariants}
         initial="hidden"
         animate="visible"
@@ -82,6 +82,13 @@ const AnswerItems = ({ expandedCategory }: Props) => {
             </motion.li>
           );
         })}
+        <button
+          onClick={() => router.push("/writing?category=" + expandedCategory)}
+          className="w-full rounded-lg border bg-slate-800 p-4 text-white transition-colors hover:bg-slate-700"
+        >
+          나의 새로운 <span className="font-bold">{expandedCategory}</span>{" "}
+          이야기를 만들어보세요! 📚
+        </button>
       </motion.ul>
     </div>
   );
