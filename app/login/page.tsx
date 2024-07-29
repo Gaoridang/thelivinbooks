@@ -4,7 +4,7 @@ import { login, signup } from "./actions";
 
 import { useFormState } from "react-dom";
 import { useFormAction } from "../hooks/useFormAction";
-import { FormValues } from "./actions";
+import { LoginFormValues, SignupFormValues } from "./actions";
 import FormFields from "./FormFields";
 import { Form } from "@/components/ui/form";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loginState, loginAction] = useFormState(login, null);
   const [signUpState, signUpAction] = useFormState(signup, null);
-  const form = useFormAction<FormValues>({
+  const loginForm = useFormAction<LoginFormValues>({
     state: isSignUp ? signUpState : loginState,
     defaultValues: {
       email: "",
@@ -24,10 +24,22 @@ const LoginPage = () => {
     onSuccess: () => {},
   });
 
+  const signUpForm = useFormAction<LoginFormValues>({
+    state: isSignUp ? signUpState : loginState,
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    onSuccess: () => {},
+  });
+
+  const currentForm = isSignUp ? signUpForm : loginForm;
+
   return (
     <div className="grid h-screen grid-cols-1 md:grid-cols-2">
       <div className="grid place-content-center">
-        <Form {...form}>
+        <Form {...currentForm}>
           <form
             className="grid gap-4"
             action={isSignUp ? signUpAction : loginAction}

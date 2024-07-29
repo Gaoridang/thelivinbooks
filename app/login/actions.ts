@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { z } from "zod";
 
-const formSchema = z
+const loginSchema = z.object({
+  email: z.string().email("올바른 이메일 주소를 입력해주세요."),
+  password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다."),
+});
+
+const signupSchema = z
   .object({
     email: z.string().email("올바른 이메일 주소를 입력해주세요."),
     password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다."),
@@ -13,9 +18,11 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "비밀번호가 일치하지 않습니다.",
+    path: ["confirmPassword"],
   });
 
-export type FormValues = z.infer<typeof formSchema>;
+export type LoginFormValues = z.infer<typeof loginSchema>;
+export type SignupFormValues = z.infer<typeof signupSchema>;
 
 export async function login(
   _prevState: any,
@@ -28,7 +35,7 @@ export async function login(
     password: formData.get("password") as string,
   };
 
-  const validation = formSchema.safeParse(data);
+  const validation = loginSchema.safeParse(data);
 
   if (!validation.success) {
     const { fieldErrors } = validation.error.flatten();
@@ -71,7 +78,7 @@ export async function signup(
     confirmPassword: formData.get("confirmPassword") as string,
   };
 
-  const validation = formSchema.safeParse(data);
+  const validation = signupSchema.safeParse(data);
 
   if (!validation.success) {
     const { fieldErrors } = validation.error.flatten();
@@ -81,7 +88,10 @@ export async function signup(
     };
   }
 
-  const { error } = await supabase.auth.signUp(data);
+  const { error } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+  });
 
   if (error) {
     switch (error.status) {
