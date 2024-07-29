@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 import { fetchAnswers } from "@/app/utils/getCategorizedAnswers";
 import { useQuery } from "@tanstack/react-query";
-import { categories } from "./AnswersContainer";
 
 interface Props {
   expandedCategory: string;

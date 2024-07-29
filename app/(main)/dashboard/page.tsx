@@ -13,6 +13,7 @@ const DashboardPage = async () => {
   await queryClient.prefetchQuery({
     queryKey: ["answers"],
     queryFn: fetchAnswers,
+    retry: 1,
   });
 
   return (
