@@ -24,7 +24,7 @@ const LoginPage = () => {
     onSuccess: () => {},
   });
 
-  const signUpForm = useFormAction<LoginFormValues>({
+  const signUpForm = useFormAction<SignupFormValues>({
     state: isSignUp ? signUpState : loginState,
     defaultValues: {
       email: "",
