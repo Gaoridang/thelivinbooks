@@ -19,9 +19,7 @@ const LoginPage = () => {
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "",
     },
-    onSuccess: () => {},
   });
 
   const signUpForm = useFormAction<SignupFormValues>({
