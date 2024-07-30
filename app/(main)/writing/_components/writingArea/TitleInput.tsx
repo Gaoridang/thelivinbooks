@@ -1,30 +1,35 @@
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import React from "react";
+import { useFormContext } from "react-hook-form";
 
-interface Props {
-  value: string;
-  onChange: (title: string) => void;
-}
+const TitleInput = () => {
+  const { control } = useFormContext();
 
-const TitleInput = ({ value, onChange }: Props) => {
   return (
-    <div>
-      <Label
-        htmlFor="title"
-        className="border-yellow border-l-4 pl-4 font-semibold"
-      >
-        제목
-      </Label>
-      <Input
-        placeholder="제목을 입력하세요."
-        name="title"
-        id="title"
-        className="rounded-none border-none pl-0 text-base focus-visible:ring-0"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
+    <FormField
+      name="title"
+      control={control}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="border-l-4 border-yellow pl-4 font-semibold">
+            제목
+          </FormLabel>
+          <FormControl>
+            <Input
+              {...field}
+              placeholder="제목을 입력하세요."
+              className="rounded-none border-none pl-0 text-base focus-visible:ring-0"
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 };
 
