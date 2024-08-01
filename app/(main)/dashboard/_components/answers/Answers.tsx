@@ -5,14 +5,15 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { fetchAnswers } from "@/app/utils/getCategorizedAnswers";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchFeedbacks } from "@/app/utils/getFeedbacks";
 
 interface Props {
   expandedCategory: string;
 }
 
 type Answer = {
-  id: number;
+  id: string;
   question: string;
   title: string;
   answer: string;
@@ -46,11 +47,19 @@ const ItemVariants = {
 
 const AnswerItems = ({ expandedCategory }: Props) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data } = useQuery<CategorizedAnswers>({
     queryKey: ["answers"],
     queryFn: () => fetchAnswers(),
   });
+
+  const handleMouseEnter = (id: string) => {
+    return queryClient.prefetchQuery({
+      queryKey: ["feedbacks"],
+      queryFn: () => fetchFeedbacks(id),
+    });
+  };
 
   const expandedData = data?.[expandedCategory as Category];
 
@@ -71,6 +80,7 @@ const AnswerItems = ({ expandedCategory }: Props) => {
                 "cursor-pointer rounded-xl border-2 bg-white p-4 transition-all duration-300 ease-in-out",
                 "hover:shadow-lg",
               )}
+              onMouseEnter={() => handleMouseEnter(answer.id)}
               onClick={() => router.push(`/answers/${answer.id}`)}
             >
               <p className="line-clamp-2 max-w-full font-semibold">

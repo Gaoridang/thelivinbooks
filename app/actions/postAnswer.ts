@@ -19,8 +19,6 @@ export const createAnswer = async (
 ): Promise<SupabaseActionReturnType<CreateAnswerType>> => {
   const supabase = createClient();
 
-  console.log(args, formData);
-
   const title = formData.get("title");
   const content = formData.get("content");
 
