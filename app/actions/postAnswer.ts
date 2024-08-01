@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "../utils/supabase/server";
+import { SupabaseActionReturnType } from "../types/actionTypes";
 
 const createAnswerSchema = z.object({
   title: z.string().min(1, "제목을 입력하세요."),
@@ -15,8 +16,10 @@ export type CreateAnswerType = z.infer<typeof createAnswerSchema>;
 export const createAnswer = async (
   args: any,
   formData: FormData,
-): Promise<ActionState | null> => {
+): Promise<SupabaseActionReturnType<CreateAnswerType>> => {
   const supabase = createClient();
+
+  console.log(args, formData);
 
   const title = formData.get("title");
   const content = formData.get("content");
@@ -41,8 +44,8 @@ export const createAnswer = async (
 
     if (error) {
       return {
-        code: "INTERNAL_ERROR",
-        err: error,
+        status: "INSERT_ERROR",
+        error: error,
       };
     }
 
@@ -57,8 +60,8 @@ export const createAnswer = async (
 
   if (error) {
     return {
-      code: "INTERNAL_ERROR",
-      err: error,
+      status: "INSERT_ERROR",
+      error: error,
     };
   }
 
@@ -66,7 +69,7 @@ export const createAnswer = async (
     const { fieldErrors } = validation.error.flatten();
 
     return {
-      code: "VALIDATION_ERROR",
+      status: "VALIDATION_ERROR",
       fieldErrors,
     };
   }
