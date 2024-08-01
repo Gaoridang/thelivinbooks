@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { z } from "zod";
+import { SupabaseActionReturnType } from "../types/actionTypes";
 
 const loginSchema = z.object({
   email: z.string().email("올바른 이메일 주소를 입력해주세요."),
@@ -27,7 +28,7 @@ export type SignupFormValues = z.infer<typeof signupSchema>;
 export async function login(
   _prevState: any,
   formData: FormData,
-): Promise<ActionState | void> {
+): Promise<SupabaseActionReturnType<LoginFormValues> | void> {
   const supabase = createClient();
 
   const data = {
@@ -40,7 +41,7 @@ export async function login(
   if (!validation.success) {
     const { fieldErrors } = validation.error.flatten();
     return {
-      code: "VALIDATION_ERROR",
+      status: "VALIDATION_ERROR",
       fieldErrors,
     };
   }
@@ -51,13 +52,14 @@ export async function login(
     switch (error.status) {
       case 400:
         return {
-          code: "AUTH_ERROR",
+          status: "AUTH_ERROR",
           message: "이메일 또는 비밀번호가 올바르지 않습니다.",
+          error: error,
         };
       default:
         return {
-          code: "INTERNAL_ERROR",
-          err: error,
+          status: "INTERNAL_ERROR",
+          error: error,
         };
     }
   }
@@ -69,7 +71,7 @@ export async function login(
 export async function signup(
   _prevState: any,
   formData: FormData,
-): Promise<ActionState | null> {
+): Promise<SupabaseActionReturnType<SignupFormValues> | null> {
   const supabase = createClient();
 
   const data = {
@@ -83,7 +85,7 @@ export async function signup(
   if (!validation.success) {
     const { fieldErrors } = validation.error.flatten();
     return {
-      code: "VALIDATION_ERROR",
+      status: "VALIDATION_ERROR",
       fieldErrors,
     };
   }
@@ -97,14 +99,14 @@ export async function signup(
     switch (error.status) {
       case 422:
         return {
-          code: "EXISTS_ERROR",
-          key: "email",
+          status: "EXISTS_ERROR",
+          error: error,
           message: "이미 사용 중인 이메일입니다.",
         };
       default:
         return {
-          code: "INTERNAL_ERROR",
-          err: error,
+          status: "INTERNAL_ERROR",
+          error: error,
         };
     }
   }

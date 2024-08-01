@@ -1,44 +1,58 @@
 "use client";
 
-import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import AnswerItems from "./Answers";
 
-export const categories = ["과거", "현재", "미래"];
+export const categories = ["과거", "현재", "미래", "기타"];
+
+const buttonVariants = {
+  initial: {
+    opacity: 0,
+  },
+  animate: {
+    opacity: 1,
+  },
+  exit: {
+    opacity: 0,
+  },
+};
 
 const AnswersContainer = () => {
   const [expandedCategory, setExpandedCategory] = useState("과거");
+  const router = useRouter();
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="mb-4 grid grid-cols-4 gap-2">
         {categories.map((category) => (
           <motion.div
             key={category}
-            className="flex aspect-square cursor-pointer items-center justify-center rounded-lg border bg-slate-50 p-4"
-            whileHover={{
-              boxShadow: "0 0 0 2px #000",
-              scale: 1.05,
-            }}
-            animate={{
-              boxShadow:
-                expandedCategory === category ? "0 0 0 2px #000" : "none",
-              scale: expandedCategory === category ? 1.05 : 1,
-            }}
-            onClick={() => {
-              if (expandedCategory === category) {
-                setExpandedCategory("");
-              } else {
-                setExpandedCategory(category);
-              }
-            }}
+            className="relative flex cursor-pointer items-center justify-center pb-2"
+            onClick={() => setExpandedCategory(category)}
           >
-            <motion.h2 className="text-center text-xl font-bold">
-              {category}
-            </motion.h2>
+            {category === expandedCategory && (
+              <motion.div
+                className="absolute bottom-0 left-0 h-[1px] w-full bg-black"
+                layoutId="underline"
+              ></motion.div>
+            )}
+            <motion.h2 className="text-center">{category}</motion.h2>
           </motion.div>
         ))}
       </div>
+      <motion.button
+        onClick={() => router.push("/writing?category=" + expandedCategory)}
+        className="w-full p-2 hover:underline hover:underline-offset-2"
+        variants={buttonVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        나의 새로운 <span className="font-bold">{expandedCategory}</span>{" "}
+        이야기를 만들어보세요! 📚
+      </motion.button>
       {expandedCategory && <AnswerItems expandedCategory={expandedCategory} />}
     </div>
   );

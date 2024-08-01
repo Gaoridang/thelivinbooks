@@ -1,4 +1,4 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { AuthError, PostgrestError } from "@supabase/supabase-js";
 
 export type BaseActionReturnType<T> =
   | {
@@ -18,16 +18,24 @@ export type BaseActionReturnType<T> =
 
 export type SupabaseActionErrorReturnType =
   | {
+      status: "AUTH_ERROR";
+      error: AuthError;
+      message: string;
+    }
+  | {
       status: "EXISTS_ERROR";
-      error: PostgrestError;
+      error: AuthError;
+      message: string;
     }
   | {
       status: "INSERT_ERROR";
       error: PostgrestError;
+      message: string;
     }
   | {
       status: "UPDATE_ERROR";
       error: PostgrestError;
+      message: string;
     }
   | {
       status: "GET_ERROR";

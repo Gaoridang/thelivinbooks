@@ -2,39 +2,46 @@
 
 import { createAnswer, CreateAnswerType } from "@/app/actions/postAnswer";
 import { useFormAction } from "@/app/hooks/useFormAction";
-import { Category } from "@/app/types";
+import { CategoryType } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useFormState, useFormStatus } from "react-dom";
 import ContentTextArea from "./ContentTextArea";
+import HiddenInput from "./HiddenInput";
 import TitleInput from "./TitleInput";
 
 interface Props {
   fetchedQuestionId?: string;
-  category?: Category;
+  category?: CategoryType;
 }
 
 const WritingArea = ({ fetchedQuestionId, category }: Props) => {
-  const [createAnswerState] = useFormState(createAnswer, null);
+  const [createAnswerState, createAnswerAction] = useFormState(
+    createAnswer,
+    null,
+  );
   const { pending } = useFormStatus();
   const form = useFormAction<CreateAnswerType>({
     state: createAnswerState,
     defaultValues: {
       title: "",
       content: "",
+      questionId: fetchedQuestionId,
+      category: category,
     },
-  });
-
-  const createAnswerWithQuestionId = createAnswer.bind(null, {
-    fetchedQuestionId,
-    category,
   });
 
   return (
     <Form {...form}>
-      <form action={createAnswerWithQuestionId} className="grid gap-4">
+      <form
+        action={createAnswerAction}
+        className="grid gap-4 rounded-lg border p-4 shadow-md"
+      >
         <TitleInput />
         <ContentTextArea />
+
+        <HiddenInput name="questionId" />
+        <HiddenInput name="category" />
         <div>
           <Button
             className="bg-yellow text-black hover:bg-yellow-200"

@@ -1,4 +1,4 @@
-export const fetchFeedbacks = async (id: string) => {
+export const createFeedbacks = async (id: string) => {
   const response = await fetch("/api/feedbacks/" + id);
 
   if (!response.ok) {

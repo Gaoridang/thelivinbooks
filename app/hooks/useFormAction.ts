@@ -29,6 +29,8 @@ export const useFormAction = <
     if (!hasState(state)) return;
     form.clearErrors();
 
+    console.log(state.status);
+
     switch (state.status) {
       case "INTERNAL_ERROR":
         console.error(state.error);
@@ -37,8 +39,7 @@ export const useFormAction = <
         const { fieldErrors } = state;
         for (const field in fieldErrors) {
           form.setError(field, {
-            type: "manual",
-            message: fieldErrors[field].join(", "),
+            message: fieldErrors[field][0],
           });
         }
         break;
@@ -60,5 +61,5 @@ const hasState = (
 ): state is BaseActionReturnType<any> => {
   if (!state || typeof state !== "object") return false;
 
-  return "code" in state;
+  return "status" in state;
 };

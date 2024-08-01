@@ -1,12 +1,22 @@
-import { CategorizedAnswers } from "@/app/(main)/dashboard/_components/answers/Answers";
+import { AnswerType, CategoryType } from "@/app/types";
 import { createClient } from "@/app/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   const supabase = createClient();
-  const { data, error } = (await supabase.rpc("get_categorized_answers")) as {
-    data: CategorizedAnswers;
+  const { data, error } = (await supabase.rpc(
+    "get_all_user_answers",
+  )) as unknown as {
+    data: {
+      id: string;
+      title: string;
+      content: string;
+      created_at: string;
+      question_content: string | null;
+      category: CategoryType;
+      answer_type: AnswerType;
+    }[];
     error: PostgrestError | null;
   };
 
