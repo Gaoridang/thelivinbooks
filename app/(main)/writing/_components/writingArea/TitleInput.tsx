@@ -1,30 +1,41 @@
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import React from "react";
+import { KeyboardEvent } from "react";
+import { useFormContext } from "react-hook-form";
 
-interface Props {
-  value: string;
-  onChange: (title: string) => void;
-}
+const TitleInput = () => {
+  const { control } = useFormContext();
 
-const TitleInput = ({ value, onChange }: Props) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <div>
-      <Label
-        htmlFor="title"
-        className="border-yellow border-l-4 pl-4 font-semibold"
-      >
-        제목
-      </Label>
-      <Input
-        placeholder="제목을 입력하세요."
-        name="title"
-        id="title"
-        className="rounded-none border-none pl-0 text-base focus-visible:ring-0"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
+    <FormField
+      name="title"
+      control={control}
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <Input
+              {...field}
+              autoFocus
+              placeholder="제목을 입력하세요."
+              className="rounded-none border-none pl-0 text-2xl font-bold focus-visible:ring-0"
+              onKeyDown={handleKeyDown}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
 

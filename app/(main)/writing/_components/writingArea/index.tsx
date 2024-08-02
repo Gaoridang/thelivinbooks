@@ -1,98 +1,57 @@
 "use client";
 
-import { supabaseService } from "@/app/onboarding/_utils/supabaseService";
-import { Category, Question } from "@/app/types";
-import { supabase } from "@/app/utils/supabase/client";
+import { createAnswer, CreateAnswerType } from "@/app/actions/postAnswer";
+import { useFormAction } from "@/app/hooks/useFormAction";
+import { CategoryType } from "@/app/types";
 import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Form } from "@/components/ui/form";
+import { useFormState, useFormStatus } from "react-dom";
 import ContentTextArea from "./ContentTextArea";
+import HiddenInput from "./HiddenInput";
 import TitleInput from "./TitleInput";
 
 interface Props {
   fetchedQuestionId?: string;
-  category?: Category;
+  category?: CategoryType;
 }
 
 const WritingArea = ({ fetchedQuestionId, category }: Props) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      console.error("User is not logged in");
-      return;
-    }
-
-    if (!title.trim() || !content.trim()) {
-      console.error("Title and content are required");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      let questionId = fetchedQuestionId;
-      let insertedQuestion: Partial<Question>[];
-      if (!questionId) {
-        insertedQuestion = await supabaseService.insert<Partial<Question>>(
-          "questions",
-          {
-            content: title,
-            category,
-          },
-        );
-
-        questionId = insertedQuestion[0].id;
-      }
-
-      const insertedPost = await supabaseService.insert("profile_answers", {
-        title: title,
-        answer: content,
-        user_id: user.id,
-        question_id: questionId,
-      });
-
-      if (!insertedPost || insertedPost.length === 0) {
-        throw new Error("Failed to insert post");
-      }
-
-      router.push(`/dashboard`);
-    } catch (error) {
-      console.error("Error in handleSubmit:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleChangeTitle = (value: string) => {
-    setTitle(value);
-  };
-
-  const handleChangeContent = (value: string) => {
-    setContent(value);
-  };
+  const [createAnswerState, createAnswerAction] = useFormState(
+    createAnswer,
+    null,
+  );
+  const { pending } = useFormStatus();
+  const form = useFormAction<CreateAnswerType>({
+    state: createAnswerState,
+    defaultValues: {
+      title: "",
+      content: "",
+      questionId: fetchedQuestionId,
+      category: category,
+    },
+  });
 
   return (
-    <div className="grid gap-4">
-      <TitleInput value={title} onChange={handleChangeTitle} />
-      <ContentTextArea value={content} onChange={handleChangeContent} />
-      <div>
-        <Button
-          className="bg-yellow text-black hover:bg-yellow-200"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "처리 중..." : "발행"}
-        </Button>
-      </div>
-    </div>
+    <Form {...form}>
+      <form
+        action={createAnswerAction}
+        className="grid gap-4 rounded-lg border p-4 shadow-md"
+      >
+        <TitleInput />
+        <ContentTextArea />
+
+        <HiddenInput name="questionId" />
+        <HiddenInput name="category" />
+        <div>
+          <Button
+            className="bg-yellow text-black hover:bg-yellow-200"
+            disabled={pending}
+          >
+            {pending ? "답변 전송 중..." : "발행"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

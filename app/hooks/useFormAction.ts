@@ -1,11 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { FieldValues, useForm, UseFormProps } from "react-hook-form";
+import { BaseActionReturnType } from "../types/actionTypes";
 
 type UseFormActionProps<
   TFieldValues extends FieldValues = FieldValues,
   TContext = any,
 > = UseFormProps<TFieldValues, TContext> & {
-  state: ActionState | unknown;
+  state: BaseActionReturnType<TFieldValues> | unknown;
   onSuccess?: () => void;
 };
 
@@ -28,25 +29,19 @@ export const useFormAction = <
     if (!hasState(state)) return;
     form.clearErrors();
 
-    switch (state.code) {
+    console.log(state.status);
+
+    switch (state.status) {
       case "INTERNAL_ERROR":
-        console.error(state.err);
+        console.error(state.error);
         break;
       case "VALIDATION_ERROR":
         const { fieldErrors } = state;
         for (const field in fieldErrors) {
           form.setError(field, {
-            type: "manual",
-            message: fieldErrors[field].join(", "),
+            message: fieldErrors[field][0],
           });
         }
-        break;
-      case "AUTH_ERROR":
-        form.setError("email", { type: "manual", message: "" });
-        form.setError("password", { type: "manual", message: state.message });
-        break;
-      case "EXISTS_ERROR":
-        form.setError(state.key, { type: "manual", message: state.message });
         break;
       case "SUCCESS":
         handleSuccess();
@@ -61,8 +56,10 @@ export const useFormAction = <
 };
 
 // ActionState 타입인지 확인을 위한 Type Guard
-const hasState = (state: ActionState | unknown): state is ActionState => {
+const hasState = (
+  state: BaseActionReturnType<any> | unknown,
+): state is BaseActionReturnType<any> => {
   if (!state || typeof state !== "object") return false;
 
-  return "code" in state;
+  return "status" in state;
 };
