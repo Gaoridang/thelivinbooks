@@ -34,7 +34,7 @@ const DashboardPage = async () => {
   });
 
   return (
-    <div className="mx-auto mt-6 grid max-w-2xl gap-6 p-6 md:p-0">
+    <div>
       <TotalAnswers totalAnswers={totalAnswers} />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <AnswersContainer />

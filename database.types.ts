@@ -33,14 +33,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "ai_replies_with_question_answer_id_fkey"
+            foreignKeyName: "fk_with_question"
             columns: ["with_question_answer_id"]
             isOneToOne: false
             referencedRelation: "user_answers_with_question"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "ai_replies_without_question_answer_id_fkey"
+            foreignKeyName: "fk_without_question"
             columns: ["without_question_answer_id"]
             isOneToOne: false
             referencedRelation: "user_answers_without_question"
@@ -257,7 +257,7 @@ export type Database = {
           content: string | null
           created_at: string | null
           id: string
-          question_id: string
+          question_id: string | null
           title: string | null
           updated_at: string | null
           user_id: string
@@ -266,7 +266,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          question_id: string
+          question_id?: string | null
           title?: string | null
           updated_at?: string | null
           user_id?: string
@@ -275,7 +275,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          question_id?: string
+          question_id?: string | null
           title?: string | null
           updated_at?: string | null
           user_id?: string
