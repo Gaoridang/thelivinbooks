@@ -54,6 +54,10 @@ const config = {
         },
         yellow: {
           DEFAULT: "var(--accent-yellow)",
+          gradient: "var(--gradient-yellow)",
+        },
+        orange: {
+          gradient: "var(--gradient-orange)",
         },
       },
       borderRadius: {

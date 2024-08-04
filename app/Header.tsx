@@ -6,8 +6,8 @@ import GoProfile from "./components/header/GoProfile";
 
 const Header = () => {
   return (
-    <div className="py-4">
-      <div className="mx-auto flex max-w-2xl items-center justify-between">
+    <div className="p-4">
+      <div className="flex items-center justify-between">
         <Link href="/dashboard">livinbooks</Link>
         <div className="space-x-2">
           <GoProfile />
