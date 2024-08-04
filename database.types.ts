@@ -33,14 +33,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "ai_replies_with_question_answer_id_fkey"
+            foreignKeyName: "fk_with_question"
             columns: ["with_question_answer_id"]
             isOneToOne: false
             referencedRelation: "user_answers_with_question"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "ai_replies_without_question_answer_id_fkey"
+            foreignKeyName: "fk_without_question"
             columns: ["without_question_answer_id"]
             isOneToOne: false
             referencedRelation: "user_answers_without_question"
@@ -257,7 +257,7 @@ export type Database = {
           content: string | null
           created_at: string | null
           id: string
-          question_id: string
+          question_id: string | null
           title: string | null
           updated_at: string | null
           user_id: string
@@ -266,7 +266,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          question_id: string
+          question_id?: string | null
           title?: string | null
           updated_at?: string | null
           user_id?: string
@@ -275,7 +275,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          question_id?: string
+          question_id?: string | null
           title?: string | null
           updated_at?: string | null
           user_id?: string
@@ -379,8 +379,7 @@ export type Database = {
       }
       get_all_user_answers: {
         Args: {
-          p_limit?: number
-          p_offset?: number
+          p_category?: string
         }
         Returns: Json
       }
@@ -398,6 +397,18 @@ export type Database = {
           next_question_id: string
           next_question_content: string
           total_answers: number
+        }[]
+      }
+      get_user_answers_by_category: {
+        Args: {
+          p_category: string
+        }
+        Returns: {
+          id: string
+          title: string
+          content: string
+          created_at: string
+          question_content: string
         }[]
       }
       get_user_dashboard_data: {

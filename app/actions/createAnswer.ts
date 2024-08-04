@@ -40,53 +40,30 @@ export const createAnswer = async (
     };
   }
 
-  if (questionId) {
-    const { data, error } = await supabase
-      .from("user_answers_with_question")
-      .insert({
-        title,
-        content,
-        question_id: questionId,
-      })
-      .select();
+  const { data, error } = await supabase
+    .from("user_answers_with_question")
+    .insert({
+      title,
+      content,
+      question_id: questionId || null,
+    })
+    .select();
 
-    if (error) {
-      return {
-        status: "INSERT_ERROR",
-        error: error,
-        message: "답변을 추가하는 중에 오류가 발생했습니다.",
-      };
-    }
-
-    await createAIReply(data[0].id, content, "with_question");
-  } else {
-    const { data, error } = await supabase
-      .from("user_answers_without_question")
-      .insert({
-        title,
-        content,
-      })
-      .select();
-
-    if (error) {
-      return {
-        status: "INSERT_ERROR",
-        error: error,
-        message: "답변을 추가하는 중에 오류가 발생했습니다.",
-      };
-    }
-
-    await createAIReply(data[0].id, content, "without_question");
+  if (error) {
+    return {
+      status: "INSERT_ERROR",
+      error: error,
+      message: "답변을 추가하는 중에 오류가 발생했습니다.",
+    };
   }
 
-  revalidatePath("/dashboard", "layout");
-  redirect("/dashboard");
+  revalidatePath(`/answers/${data[0].id}`, "layout");
+  redirect(`/answers/${data[0].id}`);
 };
 
 async function createAIReply(
   answerId: string,
   content: string,
-  answerType: "with_question" | "without_question",
 ): Promise<SupabaseActionReturnType<{ content: string }>> {
   try {
     const response = await openai.chat.completions.create({
@@ -101,14 +78,12 @@ async function createAIReply(
 
     const message = response.choices[0].message.content;
 
-    const insertData =
-      answerType === "with_question"
-        ? { with_question_answer_id: answerId, content: message || "" }
-        : { without_question_answer_id: answerId, content: message || "" };
-
     const { error: POST_REPLY_ERROR } = await supabase
       .from("ai_replies")
-      .insert(insertData);
+      .insert({
+        with_question_answer_id: answerId,
+        content: message || "",
+      });
 
     if (POST_REPLY_ERROR) {
       return {
