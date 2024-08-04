@@ -10,35 +10,11 @@ import AnswersContainer from "./_components/answers/AnswersContainer";
 import { fetchAnswers } from "@/app/utils/fetchAnswers";
 
 const DashboardPage = async () => {
-  const supabase = createClient();
-  const { data, error } = (await supabase.rpc(
-    "get_user_dashboard_data",
-  )) as unknown as {
-    data: {
-      answerCount: number;
-      questionId: string;
-      question: string;
-    }[];
-    error: PostgrestError | null;
-  };
-
-  const totalAnswers = data?.reduce((acc, cur) => {
-    return acc + cur.answerCount;
-  }, 0);
-
-  // 답변 prefetch
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["answers"],
-    queryFn: fetchAnswers,
-  });
-
   return (
     <div>
-      <TotalAnswers totalAnswers={totalAnswers} />
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <AnswersContainer />
-      </HydrationBoundary>
+      {/* <TotalAnswers totalAnswers={totalAnswers} /> */}
+
+      <AnswersContainer />
     </div>
   );
 };

@@ -26,25 +26,13 @@ const ListVariants = {
   },
 };
 
-const AnswerVariants = {
-  hidden: {
-    height: 0,
-  },
-  animate: {
-    height: "auto",
-  },
-  exit: {
-    height: 0,
-  },
-};
-
 const AnswerItems = ({ expandedCategory }: Props) => {
   const router = useRouter();
   const [expandedAnswers, setExpandedAnswers] = useState<string[]>([]);
 
-  const { data, isLoading } = useQuery<AnswerReturnType>({
-    queryKey: ["answers"],
-    queryFn: fetchAnswers,
+  const { data: answers, isLoading } = useQuery<Answer[]>({
+    queryKey: ["answers", expandedCategory],
+    queryFn: () => fetchAnswers(expandedCategory),
   });
 
   const handleMouseEnter = (id: string) => {
@@ -64,30 +52,24 @@ const AnswerItems = ({ expandedCategory }: Props) => {
     }
   };
 
-  if (!data || isLoading) return null;
-
-  const expandedData =
-    data?.answers.filter((answer) => answer.category === expandedCategory) ||
-    [];
+  if (!answers || isLoading) return null;
 
   return (
-    <div className="relative">
-      <motion.ul
-        className="absolute left-0 top-full mt-4 grid w-full gap-4"
-        variants={ListVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {expandedData.map((answer) => (
-          <AnswerItem
-            key={answer.id}
-            onToggle={() => handleExpand(answer.id)}
-            answer={answer}
-            isExpanded={expandedAnswers.includes(answer.id)}
-          />
-        ))}
-      </motion.ul>
-    </div>
+    <motion.ul
+      className="grid w-full"
+      variants={ListVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {answers.map((answer) => (
+        <AnswerItem
+          key={answer.id}
+          onToggle={() => handleExpand(answer.id)}
+          answer={answer}
+          isExpanded={expandedAnswers.includes(answer.id)}
+        />
+      ))}
+    </motion.ul>
   );
 };
 
@@ -103,43 +85,46 @@ const AnswerItem = ({
   return (
     <motion.li
       key={answer.id}
-      className="border-b bg-white"
+      className="mb-2 border-b bg-white"
       // onMouseEnter={() => handleMouseEnter(answer.id)}
     >
-      <div
-        className="flex cursor-pointer items-center gap-4"
-        onClick={onToggle}
-      >
-        {isExpanded ? (
-          <MinusIcon className="h-4 w-4" />
-        ) : (
-          <PlusIcon className="h-4 w-4" />
-        )}
+      <div className="flex cursor-pointer items-center" onClick={onToggle}>
+        <div className="mr-4 flex h-4 w-4 items-center justify-center">
+          {isExpanded ? (
+            <MinusIcon className="h-4 w-4" />
+          ) : (
+            <PlusIcon className="h-4 w-4" />
+          )}
+        </div>
         <p className="line-clamp-2 max-w-full select-none text-base font-semibold">
-          {answer.question_content}
+          {answer.question_content || answer.title}
         </p>
       </div>
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            className="pl-8"
-            initial="collapsed"
-            animate="expanded"
-            exit="collapsed"
-            variants={{
-              expanded: { opacity: 1, height: "auto" },
-              collapsed: { opacity: 0, height: 0 },
-            }}
-            transition={{
-              duration: 0.3,
-              ease: [0.04, 0.62, 0.23, 0.98],
-            }}
-          >
-            <p>{answer.title}</p>
-            <p className="line-clamp-2">{answer.content}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        className="ml-8 overflow-hidden"
+        style={{ marginBlock: "0.5rem" }}
+      >
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial="collapsed"
+              animate="expanded"
+              exit="collapsed"
+              variants={{
+                expanded: { opacity: 1, height: "auto" },
+                collapsed: { opacity: 0, height: 0 },
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.04, 0.62, 0.23, 0.98],
+              }}
+            >
+              <p>{answer.title}</p>
+              <p className="line-clamp-2">{answer.content}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.li>
   );
 };
