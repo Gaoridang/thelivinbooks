@@ -6,7 +6,8 @@ import { Answer, AnswerReturnType } from "@/app/types";
 import { fetchAnswers } from "@/app/utils/fetchAnswers";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { ArrowRight, ChevronRight, MinusIcon, PlusIcon } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   expandedCategory: string;
@@ -119,8 +120,18 @@ const AnswerItem = ({
                 ease: [0.04, 0.62, 0.23, 0.98],
               }}
             >
-              <p>{answer.title}</p>
-              <p className="line-clamp-2">{answer.content}</p>
+              <Link
+                href={`/answers/${answer.id}`}
+                className="group flex items-center justify-between gap-4"
+              >
+                <div>
+                  <p>{answer.title}</p>
+                  <p className="line-clamp-2">{answer.content}</p>
+                </div>
+                <div>
+                  <ArrowRight className="mr-2 h-6 w-6 rounded-full bg-yellow p-1 transition-all group-hover:translate-x-2" />
+                </div>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>

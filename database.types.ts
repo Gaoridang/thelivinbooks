@@ -399,6 +399,16 @@ export type Database = {
           total_answers: number
         }[]
       }
+      get_random_question: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          updated_at: string | null
+        }[]
+      }
       get_user_answers_by_category: {
         Args: {
           p_category: string
