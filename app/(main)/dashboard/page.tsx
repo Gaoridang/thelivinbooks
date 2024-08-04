@@ -7,9 +7,7 @@ const DashboardPage = async () => {
     <div>
       {/* <TotalAnswers totalAnswers={totalAnswers} /> */}
       {/* <Logo /> */}
-
       <RecommendedQuestion />
-
       <AnswersContainer />
     </div>
   );
