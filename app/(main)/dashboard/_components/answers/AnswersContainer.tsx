@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AnswerItems from "./Answers";
 import { cn } from "@/lib/utils";
+import RecommendedQuestion from "../RecommendedQuestion";
 
 export const categories = ["과거", "현재", "미래", "기타"];
 
@@ -26,7 +27,7 @@ const AnswersContainer = () => {
 
   return (
     <div>
-      <motion.button
+      {/* <motion.button
         onClick={() => router.push("/writing?category=" + expandedCategory)}
         className="w-full p-2 hover:underline hover:underline-offset-2"
         variants={buttonVariants}
@@ -35,8 +36,9 @@ const AnswersContainer = () => {
         exit="exit"
       >
         새로운 이야기를 만들어보세요! 📚
-      </motion.button>
-      <div className="relative mb-8 mt-20">
+      </motion.button> */}
+      <h2 className="my-8 text-center text-2xl font-bold">나의 이야기</h2>
+      <div className="relative mb-8">
         <div className="absolute right-full top-0 mb-4 mr-4 grid gap-4">
           {categories.map((category) => (
             <motion.div

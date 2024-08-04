@@ -34,11 +34,13 @@ const AnswerPage = async ({ params }: Props) => {
     redirect("/error");
   }
 
+  const replyContent = reply?.content.replace(/\<\/?comment\>/g, "");
+
   return (
     <div>
       <p>{answer?.title}</p>
       <p>{answer?.content}</p>
-      <AIReply reply={reply?.content} />
+      <AIReply reply={replyContent} />
     </div>
   );
 };

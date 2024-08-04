@@ -1,14 +1,12 @@
-import { UserPen } from "lucide-react";
-import Link from "next/link";
-import React from "react";
-import LogoutButton from "./components/header/logout";
+import Logo from "./(main)/dashboard/_components/Logo";
 import GoProfile from "./components/header/GoProfile";
+import LogoutButton from "./components/header/logout";
 
 const Header = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard">livinbooks</Link>
+        <Logo width={120} />
         <div className="space-x-2">
           <GoProfile />
           <LogoutButton />
