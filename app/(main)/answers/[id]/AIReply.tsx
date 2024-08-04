@@ -31,7 +31,14 @@ const AIReply = ({ reply }: Props) => {
     };
   }, []);
 
-  return <div>{newReply}</div>;
+  return (
+    <div className="space-y-2 border-t pt-4">
+      <span className="rounded-full bg-yellow-100 px-2 py-1 text-sm font-semibold text-yellow-800">
+        Blogger AI
+      </span>
+      <p className="pl-2">{newReply}</p>
+    </div>
+  );
 };
 
 export default AIReply;

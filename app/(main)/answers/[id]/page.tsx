@@ -38,8 +38,8 @@ const AnswerPage = async ({ params }: Props) => {
 
   return (
     <div>
-      <p>{answer?.title}</p>
-      <p>{answer?.content}</p>
+      <p className="my-8 text-center text-3xl font-bold">{answer?.title}</p>
+      <p className="min-h-48">{answer?.content}</p>
       <AIReply reply={replyContent} />
     </div>
   );
