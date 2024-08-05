@@ -402,11 +402,8 @@ export type Database = {
       get_random_question: {
         Args: Record<PropertyKey, never>
         Returns: {
-          category: string | null
-          content: string
-          created_at: string | null
           id: string
-          updated_at: string | null
+          content: string
         }[]
       }
       get_user_answers_by_category: {

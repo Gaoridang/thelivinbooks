@@ -1,15 +1,18 @@
+import { AFTER_LAST_QUESTION_ID } from "@/app/constants/questionId";
 import { createClient } from "@/app/utils/supabase/server";
-import { ChevronRight, Pencil, PencilLine } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 const RecommendedQuestion = async () => {
   const supabase = createClient();
   const { data, error } = await supabase.rpc("get_random_question").single();
 
-  if (error) {
+  if (error || !data) {
     console.error(error);
   }
+
+  const href =
+    data?.id === AFTER_LAST_QUESTION_ID ? "/writing" : `/writing/${data?.id}`;
 
   return (
     <div className="group relative flex items-center justify-between gap-4 rounded-lg border px-4 py-5 pb-4">
@@ -18,8 +21,9 @@ const RecommendedQuestion = async () => {
       </div>
       <p>{data?.content}</p>
       <Link
-        href={`/writing/${data?.id}`}
+        href={href}
         className="flex items-center justify-center rounded-md bg-yellow p-2 opacity-70 transition-opacity hover:opacity-100"
+        aria-disabled
       >
         <PencilLine />
       </Link>
