@@ -1,7 +1,9 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
-import AIReply from "./AIReply";
 import { createAIReply } from "@/app/utils/createAIReply";
+import dynamic from "next/dynamic";
+
+const AIReply = dynamic(() => import("./AIReply"));
 
 interface Props {
   params: { id: string };
@@ -34,13 +36,15 @@ const AnswerPage = async ({ params }: Props) => {
     redirect("/error");
   }
 
-  const replyContent = reply?.content.replace(/\<\/?comment\>/g, "");
-
   return (
     <div>
-      <p className="my-8 text-center text-3xl font-bold">{answer?.title}</p>
-      <p className="min-h-48">{answer?.content}</p>
-      <AIReply reply={replyContent} />
+      <h2 id="title" className="my-8 text-center text-3xl font-bold">
+        {answer?.title}
+      </h2>
+      <p id="content" className="min-h-48">
+        {answer?.content}
+      </p>
+      <AIReply reply={reply?.content} />
     </div>
   );
 };

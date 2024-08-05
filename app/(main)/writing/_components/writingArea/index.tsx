@@ -6,6 +6,7 @@ import { CategoryType } from "@/app/types";
 import { Form } from "@/components/ui/form";
 import { useFormState } from "react-dom";
 import FormFields from "./FormFields";
+import CAlertDialog from "../AlertDialog";
 
 interface Props {
   fetchedQuestionId?: string;
@@ -34,6 +35,7 @@ const WritingArea = ({ fetchedQuestionId, category }: Props) => {
         action={createAnswerAction}
         className="grid gap-4 rounded-lg border p-4 shadow-md"
       >
+        {createAnswerState?.status === "POSTGREST_ERROR" && <CAlertDialog />}
         <FormFields />
       </form>
     </Form>

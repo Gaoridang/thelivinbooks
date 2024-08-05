@@ -10,6 +10,9 @@ interface Props {
 const AIReply = ({ reply }: Props) => {
   const [newReply, setNewReply] = useState(reply);
 
+  const replyContent =
+    newReply?.replace(/\<\/?comment\>/g, "") || "답변 준비 중입니다.";
+
   useEffect(() => {
     const subscription = supabase
       .channel("ai_replies")
@@ -36,7 +39,9 @@ const AIReply = ({ reply }: Props) => {
       <span className="rounded-full bg-yellow-100 px-2 py-1 text-sm font-semibold text-yellow-800">
         Blogger AI
       </span>
-      <p className="pl-2">{newReply}</p>
+      <p id="ai-reply" className="pl-2">
+        {replyContent}
+      </p>
     </div>
   );
 };

@@ -15,6 +15,7 @@ const FormFields = () => {
       <HiddenInput name="questionId" />
       <HiddenInput name="category" />
       <Button
+        type="submit"
         className="bg-yellow text-black hover:bg-yellow-200"
         disabled={pending}
       >

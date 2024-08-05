@@ -1,13 +1,11 @@
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-
-import { Answer, AnswerReturnType } from "@/app/types";
+import { Answer } from "@/app/types";
 import { fetchAnswers } from "@/app/utils/fetchAnswers";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { ArrowRight, ChevronRight, MinusIcon, PlusIcon } from "lucide-react";
+import { ArrowRight, MinusIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
   expandedCategory: string;
@@ -28,20 +26,12 @@ const ListVariants = {
 };
 
 const AnswerItems = ({ expandedCategory }: Props) => {
-  const router = useRouter();
   const [expandedAnswers, setExpandedAnswers] = useState<string[]>([]);
 
   const { data: answers, isLoading } = useQuery<Answer[]>({
     queryKey: ["answers", expandedCategory],
     queryFn: () => fetchAnswers(expandedCategory),
   });
-
-  const handleMouseEnter = (id: string) => {
-    // return queryClient.prefetchQuery({
-    //   queryKey: ["feedbacks"],
-    //   queryFn: () => fetchFeedbacks(id),
-    // });
-  };
 
   const handleExpand = (id: string) => {
     if (!expandedAnswers.includes(id)) {
@@ -53,7 +43,14 @@ const AnswerItems = ({ expandedCategory }: Props) => {
     }
   };
 
-  if (!answers || isLoading) return null;
+  if (!answers || isLoading)
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
+      </div>
+    );
 
   return (
     <motion.ul

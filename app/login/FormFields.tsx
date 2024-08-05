@@ -77,7 +77,9 @@ const FormFields = ({ isSignUp }: Props) => {
           )}
         />
       )}
-      <Button disabled={pending}>{isSignUp ? "회원가입" : "로그인"}</Button>
+      <Button type="submit" disabled={pending}>
+        {isSignUp ? "회원가입" : "로그인"}
+      </Button>
     </div>
   );
 };
