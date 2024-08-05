@@ -15,7 +15,7 @@ const LoginPage = () => {
   const [loginState, loginAction] = useFormState(login, null);
   const [signUpState, signUpAction] = useFormState(signup, null);
   const loginForm = useFormAction<LoginFormValues>({
-    state: isSignUp ? signUpState : loginState,
+    state: loginState,
     defaultValues: {
       email: "",
       password: "",
@@ -23,13 +23,12 @@ const LoginPage = () => {
   });
 
   const signUpForm = useFormAction<SignupFormValues>({
-    state: isSignUp ? signUpState : loginState,
+    state: signUpState,
     defaultValues: {
       email: "",
       password: "",
       confirmPassword: "",
     },
-    onSuccess: () => {},
   });
 
   const currentForm = isSignUp ? signUpForm : loginForm;
