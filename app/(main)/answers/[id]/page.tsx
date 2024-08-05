@@ -1,7 +1,9 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
-import AIReply from "./AIReply";
 import { createAIReply } from "@/app/utils/createAIReply";
+import dynamic from "next/dynamic";
+
+const AIReply = dynamic(() => import("./AIReply"));
 
 interface Props {
   params: { id: string };
