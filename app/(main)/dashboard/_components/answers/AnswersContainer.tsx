@@ -1,42 +1,17 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AnswerItems from "./Answers";
-import { cn } from "@/lib/utils";
-import RecommendedQuestion from "../RecommendedQuestion";
 
 export const categories = ["과거", "현재", "미래", "기타"];
 
-const buttonVariants = {
-  initial: {
-    opacity: 0,
-  },
-  animate: {
-    opacity: 1,
-  },
-  exit: {
-    opacity: 0,
-  },
-};
-
 const AnswersContainer = () => {
   const [expandedCategory, setExpandedCategory] = useState("과거");
-  const router = useRouter();
 
   return (
     <div>
-      {/* <motion.button
-        onClick={() => router.push("/writing?category=" + expandedCategory)}
-        className="w-full p-2 hover:underline hover:underline-offset-2"
-        variants={buttonVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-      >
-        새로운 이야기를 만들어보세요! 📚
-      </motion.button> */}
       <h2 className="my-8 text-center text-2xl font-bold">나의 이야기</h2>
       <div className="relative mb-8">
         <div className="absolute right-full top-0 mb-4 mr-4 grid gap-4">
