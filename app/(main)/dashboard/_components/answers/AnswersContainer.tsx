@@ -5,20 +5,25 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import AnswerItems from "./Answers";
 
-export const categories = ["과거", "현재", "미래", "기타"];
+const categories = ["과거", "현재", "미래", "기타"];
 
 const AnswersContainer = () => {
   const [expandedCategory, setExpandedCategory] = useState("과거");
 
   return (
-    <div>
+    <div className="relative">
       <h2 className="my-8 text-center text-2xl font-bold">나의 이야기</h2>
-      <div className="relative mb-8">
-        <div className="absolute right-full top-0 mb-4 mr-4 grid gap-4">
+      <div className="flex gap-8">
+        <div className="flex-grow">
+          {expandedCategory && (
+            <AnswerItems expandedCategory={expandedCategory} />
+          )}
+        </div>
+        <div className="sticky top-10 h-fit">
           {categories.map((category) => (
             <motion.div
               key={category}
-              className="relative flex cursor-pointer items-center justify-center p-2"
+              className="relative cursor-pointer p-2"
               onClick={() => setExpandedCategory(category)}
             >
               {category === expandedCategory && (
@@ -38,9 +43,6 @@ const AnswersContainer = () => {
             </motion.div>
           ))}
         </div>
-        {expandedCategory && (
-          <AnswerItems expandedCategory={expandedCategory} />
-        )}
       </div>
     </div>
   );
