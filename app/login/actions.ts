@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { z } from "zod";
-import { SupabaseActionReturnType } from "../types/actionTypes";
+import {
+  AUTH_ERROR_MESSAGES,
+  SupabaseActionReturnType,
+} from "../types/actionTypes";
 import { handleAuthError } from "../utils";
 
 const loginSchema = z.object({
@@ -97,7 +100,24 @@ export async function signup(
   });
 
   if (error) {
-    return handleAuthError(error);
+    const errorCode = error.status as keyof typeof AUTH_ERROR_MESSAGES;
+    const errorMessage =
+      AUTH_ERROR_MESSAGES[errorCode] || "알 수 없는 오류가 발생했습니다.";
+
+    if (errorCode === 422) {
+      return {
+        status: "VALIDATION_ERROR",
+        fieldErrors: {
+          email: [errorMessage],
+        },
+      };
+    }
+
+    return {
+      status: "AUTH_ERROR",
+      error: error.status,
+      message: errorMessage,
+    };
   }
 
   revalidatePath("/dashboard", "layout");
