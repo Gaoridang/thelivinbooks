@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 import { z } from "zod";
 import { SupabaseActionReturnType } from "../types/actionTypes";
+import { handleAuthError } from "../utils";
 
 const loginSchema = z.object({
   email: z.string().email("올바른 이메일 주소를 입력해주세요."),
@@ -96,19 +97,7 @@ export async function signup(
   });
 
   if (error) {
-    switch (error.status) {
-      case 422:
-        return {
-          status: "EXISTS_ERROR",
-          error: error,
-          message: "이미 사용 중인 이메일입니다.",
-        };
-      default:
-        return {
-          status: "INTERNAL_ERROR",
-          error: error,
-        };
-    }
+    return handleAuthError(error);
   }
 
   revalidatePath("/dashboard", "layout");

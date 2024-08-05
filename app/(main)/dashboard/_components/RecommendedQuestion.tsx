@@ -1,7 +1,6 @@
 import { createClient } from "@/app/utils/supabase/server";
-import { ChevronRight, Pencil, PencilLine } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 const RecommendedQuestion = async () => {
   const supabase = createClient();
