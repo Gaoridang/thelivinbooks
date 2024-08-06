@@ -1,0 +1,1 @@
+module.exports = require("@gaoridang/ui/postcss.config");

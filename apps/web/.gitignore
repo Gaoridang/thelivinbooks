@@ -39,4 +39,3 @@ next-env.d.ts
 *storybook.log
 
 cypress/e2e/2-advanced-examples
-.turbo
