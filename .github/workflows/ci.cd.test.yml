@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: production # 또는 사용 중인 환경 이름
+    environment: production
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
@@ -20,12 +20,12 @@ jobs:
       - name: 🟢 Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: "18" # 또는 프로젝트에서 사용하는 Node.js 버전
+          node-version: "18"
 
       - name: 📥 Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 9 # 또는 프로젝트에서 사용하는 pnpm 버전
+          version: 9
 
       - name: 📦 Get pnpm store directory
         id: pnpm-cache
