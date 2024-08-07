@@ -1,6 +1,5 @@
-import { PropsWithChildren } from "react";
-import Header from "../Header";
-import Logo from "./dashboard/_components/Logo";
+import { PropsWithChildren } from 'react';
+import Header from '../Header';
 
 const MainLayout = ({ children }: PropsWithChildren) => {
   return (

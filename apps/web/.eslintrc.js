@@ -14,7 +14,4 @@ module.exports = {
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
-  rules: {
-    '@rushstack/typedef-var': 'off',
-  },
 };
