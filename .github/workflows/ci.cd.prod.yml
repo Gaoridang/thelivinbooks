@@ -1,55 +1,49 @@
-name: 🧪 Release Branch CI
+name: 🚀 Deploy workflow on production environment
 
 on:
-  push:
-    branches:
-      - release
+  pull_request:
+    branches: [main]
+    types: [closed]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    environment: production
+  deploy:
+    if: github.event.pull_request.merged == true
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      OPEN_AI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ENV_PATH: .env
+      S3_BUCKET_DIR_NAME: production
+    environment: production
+    runs-on: ubuntu-latest
     steps:
-      - name: 🛎 Checkout repository
+      - name: ✅ Checkout branch
         uses: actions/checkout@v3
 
-      - name: 🟢 Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+      - name: 🗂️ Make config folder
+        run: mkdir -p config
 
-      - name: 📥 Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: 📦 Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
+      - name: ⚙️ Create .env file
         run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          touch ${{ env.ENV_PATH }}
+          echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} >> ${{ env.ENV_PATH }}
+          echo NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} >> ${{ env.ENV_PATH }}
+          echo OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} >> ${{ env.ENV_PATH }}
 
-      - name: 💾 Setup pnpm cache
-        uses: actions/cache@v3
+      - name: 📦 Zip project files
+        run: zip -r ./$GITHUB_SHA.zip .
+
+      - name: 🌎 Access to AWS
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-      - name: 📦 Install dependencies
-        run: pnpm install
+      - name: 🚛 Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
 
-      - name: 🏗 Build project
-        run: pnpm run build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-      - name: 🧹 Run linter
-        run: pnpm run lint
+      - name: 🚀 Deploy to EC2 with CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name codedeploy \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ vars.DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
