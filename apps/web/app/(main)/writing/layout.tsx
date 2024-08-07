@@ -1,4 +1,3 @@
-import React, { PropsWithChildren } from "react";
 
 const WritingPageLayout = ({ children }: PropsWithChildren) => {
   return (

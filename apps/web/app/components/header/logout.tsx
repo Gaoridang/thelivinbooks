@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@gaoridang/ui/components/ui/button";
-import React from "react";
+
 import { supabase } from "../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 

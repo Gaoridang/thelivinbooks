@@ -1,6 +1,8 @@
-"use client";
+/* eslint-disable */
 
-import { Component, ComponentType, ErrorInfo, ReactNode } from "react";
+'use client';
+
+import { Component, ComponentType, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   FallbackComponent: ComponentType<FallbackProps>;
@@ -53,12 +55,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     const { FallbackComponent, children } = props;
 
     if (hasError && error) {
-      return (
-        <FallbackComponent
-          error={error}
-          resetErrorBoundary={this.resetErrorBoundary}
-        />
-      );
+      return <FallbackComponent error={error} resetErrorBoundary={this.resetErrorBoundary} />;
     }
 
     return children;

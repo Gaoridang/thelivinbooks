@@ -7,7 +7,6 @@ import {
   AlertDialogAction,
 } from "@gaoridang/ui/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const CAlertDialog = () => {
   const router = useRouter();
