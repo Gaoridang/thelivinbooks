@@ -1,7 +1,7 @@
 interface Props {
   question: {
     content: string;
-    category: string | undefined;
+    category: string | null;
   };
 }
 
