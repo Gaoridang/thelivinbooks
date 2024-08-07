@@ -1,0 +1,11 @@
+{
+  "extends": "@gaoridang/typescript-config/react-library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ui/components/ui*": ["./components/ui/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}
