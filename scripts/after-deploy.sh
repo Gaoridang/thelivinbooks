@@ -9,19 +9,20 @@ set -e
 # 작업 디렉토리로 이동
 cd /home/ubuntu/api_back
 
-# Node.js 버전 확인 (선택사항)
+# Node.js 버전 확인
 echo "Node.js version:"
 node -v
+
+# pnpm 설치 (없는 경우)
+if ! command -v pnpm &> /dev/null
+then
+    echo "pnpm not found. Installing pnpm..."
+    npm install -g pnpm
+fi
 
 # pnpm 버전 확인
 echo "pnpm version:"
 pnpm --version
-
-# pnpm이 설치되어 있지 않다면 글로벌로 설치
-if ! command -v pnpm &> /dev/null
-then
-    npm install -g pnpm
-fi
 
 # 의존성 설치
 pnpm install
