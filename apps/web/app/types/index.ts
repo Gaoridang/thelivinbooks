@@ -13,11 +13,11 @@ export type CategoryAnswers = {
 
 export type CategorizedAnswers = CategoryAnswers;
 
-export type Question = {
+export interface Question {
   id: string;
   content: string;
   category: CategoryType;
-};
+}
 
 export type AnswerType = "with_question" | "without_question";
 export interface AnswerReturnType {

@@ -1,5 +1,4 @@
 import { Skeleton } from "@gaoridang/ui/components/ui/skeleton";
-import React from "react";
 
 const WritingLoadingPage = () => {
   return (

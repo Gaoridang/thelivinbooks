@@ -1,23 +1,21 @@
-"use client";
+'use client';
 
-import { cn } from "@gaoridang/ui/lib/utils";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import AnswerItems from "./Answers";
+import { cn } from '@gaoridang/ui/lib/utils';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import AnswerItems from './Answers';
 
-const categories = ["과거", "현재", "미래", "기타"];
+const categories = ['과거', '현재', '미래', '기타'] as const;
 
 const AnswersContainer = () => {
-  const [expandedCategory, setExpandedCategory] = useState("과거");
+  const [expandedCategory, setExpandedCategory] = useState('과거');
 
   return (
     <div className="relative">
       <h2 className="my-8 text-center text-2xl font-bold">나의 이야기</h2>
       <div className="flex gap-8">
         <div className="flex-grow">
-          {expandedCategory && (
-            <AnswerItems expandedCategory={expandedCategory} />
-          )}
+          {expandedCategory && <AnswerItems expandedCategory={expandedCategory} />}
         </div>
         <div className="sticky top-10 h-fit">
           {categories.map((category) => (
@@ -34,8 +32,8 @@ const AnswersContainer = () => {
               )}
               <motion.h2
                 className={cn(
-                  "z-10 whitespace-nowrap text-center text-sm font-semibold",
-                  category === expandedCategory ? "opacity-100" : "opacity-30",
+                  'z-10 whitespace-nowrap text-center text-sm font-semibold',
+                  category === expandedCategory ? 'opacity-100' : 'opacity-30',
                 )}
               >
                 {category}

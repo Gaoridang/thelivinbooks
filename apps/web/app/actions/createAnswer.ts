@@ -23,7 +23,7 @@ export const createAnswer = async (
 ): Promise<SupabaseActionReturnType<CreateAnswerType>> => {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  let questionId = formData.get("questionId") as string;
+  const questionId = formData.get("questionId") as string;
 
   const validation = createAnswerSchema.safeParse({
     title,

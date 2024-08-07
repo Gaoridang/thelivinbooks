@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { supabase } from "@/app/utils/supabase/client";
-import { useEffect, useState } from "react";
+import { supabase } from '@/app/utils/supabase/client';
+import { useEffect, useState } from 'react';
 
 interface Props {
   reply?: string;
@@ -10,18 +10,17 @@ interface Props {
 const AIReply = ({ reply }: Props) => {
   const [newReply, setNewReply] = useState(reply);
 
-  const replyContent =
-    newReply?.replace(/\<\/?comment\>/g, "") || "답변 준비 중입니다.";
+  const replyContent = newReply?.replace(/\<\/?comment\>/g, '') || '답변 준비 중입니다.';
 
   useEffect(() => {
     const subscription = supabase
-      .channel("ai_replies")
+      .channel('ai_replies')
       .on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: "INSERT",
-          schema: "public",
-          table: "ai_replies",
+          event: 'INSERT',
+          schema: 'public',
+          table: 'ai_replies',
         },
         (payload) => {
           setNewReply(payload.new.content);
@@ -30,6 +29,7 @@ const AIReply = ({ reply }: Props) => {
       .subscribe();
 
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       subscription.unsubscribe();
     };
   }, []);

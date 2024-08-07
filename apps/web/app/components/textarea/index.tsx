@@ -1,4 +1,3 @@
-import React, { ComponentProps } from "react";
 
 interface Props extends ComponentProps<"textarea"> {}
 
