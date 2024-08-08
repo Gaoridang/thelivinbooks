@@ -3,6 +3,17 @@
 # 오류 발생 시 스크립트 중단
 set -e
 
+# 권한 설정
+echo "디렉토리 권한 설정 중..."
+sudo chown -R ubuntu:ubuntu /home/ubuntu/deploy
+sudo chmod -R 755 /home/ubuntu/deploy
+
+# 임시 디렉토리 설정
+export TMPDIR="/home/ubuntu/tmp"
+mkdir -p $TMPDIR
+sudo chown -R ubuntu:ubuntu $TMPDIR
+sudo chmod -R 755 $TMPDIR
+
 # NVM 설치 확인 및 설치
 if [ ! -d "$HOME/.nvm" ]; then
     echo "NVM이 설치되어 있지 않습니다. NVM을 설치합니다..."
@@ -26,9 +37,6 @@ available_space=$(df -h / | awk 'NR==2 {print $4}' | sed 's/G//')
 if (( $(echo "$available_space < 2" | bc -l) )); then
     echo "경고: 디스크 공간이 2GB 미만입니다. 불필요한 파일을 정리합니다."
     sudo find /var/log -type f -name "*.log" -mtime +7 -delete
-    sudo docker system prune -af  # Docker를 사용 중인 경우
-    npm cache clean --force
-    yarn cache clean  # Yarn을 사용 중인 경우
     pnpm store prune  # pnpm을 사용 중이므로 캐시 정리
 fi
 
