@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --config .eslintrc.js .",
+    "lint": "next lint",
     "lint:fix": "eslint --config .eslintrc.js . --fix",
     "lint:report": "eslint --config .eslintrc.js . --output-file eslint_report.json --format json",
     "cypress:open": "cypress open",
