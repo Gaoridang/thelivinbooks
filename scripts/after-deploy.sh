@@ -3,6 +3,22 @@
 # 오류 발생 시 스크립트 중단
 set -e
 
+# NVM 설치 확인 및 설치
+if [ ! -d "$HOME/.nvm" ]; then
+    echo "NVM이 설치되어 있지 않습니다. NVM을 설치합니다..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # NVM 스크립트를 로드
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # NVM bash_completion을 로드
+else
+    echo "NVM이 이미 설치되어 있습니다."
+fi
+
+# NVM 환경 설정 로드
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # NVM 스크립트를 로드
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # NVM bash_completion을 로드
+
 # 디스크 공간 확인 및 정리
 echo "디스크 공간 확인 및 정리 중..."
 df -h
@@ -10,6 +26,9 @@ available_space=$(df -h / | awk 'NR==2 {print $4}' | sed 's/G//')
 if (( $(echo "$available_space < 2" | bc -l) )); then
     echo "경고: 디스크 공간이 2GB 미만입니다. 불필요한 파일을 정리합니다."
     sudo find /var/log -type f -name "*.log" -mtime +7 -delete
+    sudo docker system prune -af  # Docker를 사용 중인 경우
+    npm cache clean --force
+    yarn cache clean  # Yarn을 사용 중인 경우
     pnpm store prune  # pnpm을 사용 중이므로 캐시 정리
 fi
 
@@ -18,11 +37,8 @@ cd /home/ubuntu/deploy
 
 # Node.js 버전 확인 및 설정
 echo "Node.js 버전 확인 중..."
-if ! command -v nvm &> /dev/null; then
-    echo "NVM이 설치되어 있지 않습니다. NVM을 설치해주세요."
-    exit 1
-fi
-nvm use 18.20.4 || nvm install 18.20.4
+nvm install 18.20.4
+nvm use 18.20.4
 
 # pnpm 설치 확인
 if ! command -v pnpm &> /dev/null; then
