@@ -22,7 +22,7 @@ pnpm run build
 
 # PM2로 애플리케이션 시작 또는 재시작
 echo "PM2로 애플리케이션 시작/재시작 중..."
-pm2 startOrRestart ecosystem.config.js --env production
+pm2 startOrRestart ecosystem.config.js
 
 echo "배포 완료!"
 
