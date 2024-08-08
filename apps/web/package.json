@@ -10,9 +10,13 @@
     "lint:fix": "eslint --config .eslintrc.js . --fix",
     "lint:report": "eslint --config .eslintrc.js . --output-file eslint_report.json --format json",
     "cypress:open": "cypress open",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "deploy": "pm2 start ecosystem.config.js --env production"
   },
   "prettier": "@gaoridang/prettier-config",
+  "engines": {
+    "node": "18.20.4"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
     "@gaoridang/ui": "workspace:*",

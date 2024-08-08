@@ -3,69 +3,73 @@
 # 오류 발생 시 스크립트 중단
 set -e
 
-# 환경 변수 설정
-export NVM_DIR="/home/ubuntu/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  
-export PATH="/home/ubuntu/.nvm/versions/node/v18.20.4/bin:$PATH"
+# 디스크 공간 확인 및 정리
+echo "디스크 공간 확인 및 정리 중..."
+df -h
+available_space=$(df -h / | awk 'NR==2 {print $4}' | sed 's/G//')
+if (( $(echo "$available_space < 2" | bc -l) )); then
+    echo "경고: 디스크 공간이 2GB 미만입니다. 불필요한 파일을 정리합니다."
+    sudo find /var/log -type f -name "*.log" -mtime +7 -delete
+    pnpm store prune  # pnpm을 사용 중이므로 캐시 정리
+fi
 
 # 작업 디렉토리로 이동
-cd /home/ubuntu/api_back
+cd /home/ubuntu/deploy
 
-# Node.js 버전 확인
-echo "Node.js version:"
-node -v
+# Node.js 버전 확인 및 설정
+echo "Node.js 버전 확인 중..."
+if ! command -v nvm &> /dev/null; then
+    echo "NVM이 설치되어 있지 않습니다. NVM을 설치해주세요."
+    exit 1
+fi
+nvm use 18.20.4 || nvm install 18.20.4
 
-# pnpm 설치 (없는 경우)
-if ! command -v pnpm &> /dev/null
-then
-    echo "pnpm not found. Installing pnpm..."
+# pnpm 설치 확인
+if ! command -v pnpm &> /dev/null; then
+    echo "pnpm 설치 중..."
     npm install -g pnpm
 fi
 
-# pnpm 버전 확인
-echo "pnpm version:"
-pnpm --version
+# 환경 변수 파일 복사
+echo "환경 변수 파일 복사 중..."
+cp /home/ubuntu/.env /home/ubuntu/deploy/apps/web/.env
 
-# Turbo 캐시 디렉토리 설정
-export TURBO_CACHE_DIR="/home/ubuntu/.turbo-cache"
+# 이전 빌드 파일 정리
+echo "이전 빌드 파일 정리 중..."
+rm -rf /home/ubuntu/deploy/apps/web/.next
 
-# 프로덕션 모드 설정
-export NODE_ENV=production
+# 의존성 설치
+echo "의존성 설치 중..."
+pnpm install --prod  # 프로덕션 의존성만 설치
 
-# 의존성 설치 (프로덕션 모드, 잠금 파일 사용)
-pnpm install --frozen-lockfile --production
+# 프로덕션 빌드
+echo "프로덕션 빌드 중..."
+pnpm run build
 
-# 환경 변수 파일 복사 (만약 별도로 관리하고 있다면)
-# cp /path/to/production/.env /home/ubuntu/api_back/.env
-
-# Lint 실행 (선택적)
-pnpm run lint
-
-# 프로덕션 빌드 (Turborepo를 사용)
-pnpm run build --cache-dir="$TURBO_CACHE_DIR"
-
-# 이전 빌드 아티팩트 정리 (선택적)
-# rm -rf /home/ubuntu/api_back/.next/cache
-
-# pm2가 설치되어 있지 않다면 글로벌로 설치
-if ! command -v pm2 &> /dev/null
-then
-    pnpm install -g pm2
+# PM2 설치 확인 및 설치
+if ! command -v pm2 &> /dev/null; then
+    echo "PM2 설치 중..."
+    npm install -g pm2
 fi
 
-# 이전에 실행 중이던 프로세스 중지
-pm2 stop api_back || true
+# PM2 로그 로테이션 설정
+echo "PM2 로그 로테이션 설정 중..."
+pm2 install pm2-logrotate
+pm2 set pm2-logrotate:max_size 10M
+pm2 set pm2-logrotate:retain 5
 
-# 새로운 프로세스 시작
-pm2 start pnpm --name "api_back" -- start
+# 이전 PM2 프로세스 중지 및 삭제
+echo "이전 PM2 프로세스 정리 중..."
+pm2 stop writing-recommendation || true
+pm2 delete writing-recommendation || true
 
-# pm2 프로세스 목록 표시
-pm2 list
+# 새 PM2 프로세스 시작
+echo "새 PM2 프로세스 시작 중..."
+cd /home/ubuntu/deploy/apps/web
+pm2 start ecosystem.config.js --env production
 
-# 불필요한 캐시 및 임시 파일 정리 (선택적)
-pnpm store prune
+echo "배포 완료!"
 
-echo "Deployment completed successfully!"
-
-# 배포 후 상태 체크 (선택적)
-# curl http://localhost:3000/health || echo "Health check failed"
+# 최종 디스크 공간 확인
+echo "최종 디스크 공간 상태:"
+df -h
