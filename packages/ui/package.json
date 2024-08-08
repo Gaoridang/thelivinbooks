@@ -34,6 +34,7 @@
     }
   },
   "devDependencies": {
+    "@gaoridang/typescript-config": "workspace:*",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8.42.0",
