@@ -2,7 +2,8 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/api_back
+    destination: /home/ubuntu/deploy
+    overwrite: true
   - source: /config/
     destination: /home/ubuntu/config
   - source: /.env
@@ -10,7 +11,7 @@ files:
 file_exists_behavior: OVERWRITE
 
 permissions:
-  - object: /home/ubuntu
+  - object: /home/ubuntu/deploy
     pattern: "**"
     owner: ubuntu
     group: ubuntu
@@ -18,5 +19,5 @@ permissions:
 hooks:
   AfterInstall:
     - location: scripts/after-deploy.sh
-      timeout: 300
+      timeout: 60
       runas: ubuntu
