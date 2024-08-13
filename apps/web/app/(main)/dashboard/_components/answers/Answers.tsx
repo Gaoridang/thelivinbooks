@@ -51,6 +51,10 @@ const AnswerItems = ({ expandedCategory }: Props) => {
       </div>
     );
 
+  if (answers.length === 0) {
+    return <p>아직 작성된 답변이 없습니다.</p>;
+  }
+
   return (
     <motion.ul className="grid w-full" variants={ListVariants} initial="hidden" animate="visible">
       {answers.map((answer) => (
