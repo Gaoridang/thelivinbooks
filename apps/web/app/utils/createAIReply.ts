@@ -2,9 +2,8 @@ import OpenAI from 'openai';
 import { prompt } from '../actions/prompt';
 import { createClient } from './supabase/server';
 
-const openAi = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export async function createAIReply(answerId: string, content: string) {
+  const openAi = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   try {
     const response = await openAi.chat.completions.create({
       model: 'gpt-4o-mini-2024-07-18',
