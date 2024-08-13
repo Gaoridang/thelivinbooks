@@ -2,6 +2,7 @@ import { createClient } from '@/app/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ComponentType } from 'react';
+import { createAIReply } from '@/app/utils/createAIReply';
 
 interface AIReplyProps {
   reply: string | undefined;
@@ -27,6 +28,15 @@ const AnswerPage = async ({ params }: Props) => {
     .select('content')
     .eq('with_question_answer_id', params.id)
     .maybeSingle();
+
+  if (!reply) {
+    // eslint-disable-next-line
+    createAIReply(
+      params.id,
+      `- title: ${answer?.title}
+        - content: ${answer?.content}` || '나를 위한 질문 몇 가지를 해줘',
+    );
+  }
 
   if (ANSWER_ERROR || REPLY_ERROR) {
     redirect('/error');
