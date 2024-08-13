@@ -44,6 +44,9 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install
 
+      - name: Check environment variables
+        run: echo $OPENAI_API_KEY | sed 's/./*/g'
+
       - name: 🏗 Build project
         run: pnpm run build
         env:
