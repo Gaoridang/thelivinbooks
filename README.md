@@ -1,6 +1,7 @@
 # thelivinbooks
 ## 링크
 [https://thelivinbooks.com](https://thelivinbooks.com)
+서버 비용 관계로 작동하지 않습니다.
 
 ## 프로젝트 소개
 
